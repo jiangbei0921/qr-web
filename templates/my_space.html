@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的空间 - SmartCode</title>
+    <link rel="stylesheet" href="/static/design-system.css">
+    <link rel="stylesheet" href="/static/my_space.css?v=2">
+</head>
+<body>
+
+<div class="ms-layout">
+
+    <!-- 顶部导航栏 -->
+    <header class="top-navigation">
+        <div class="top-nav-left">
+            <a href="/" class="top-nav-logo">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><polygon points="50,3 97,50 50,97 3,50" fill="#1E293B" stroke="#000000" stroke-width="5" stroke-linejoin="miter"/><polygon points="50,10 90,50 50,90 10,50" fill="none" stroke="#334155" stroke-width="1" stroke-linejoin="miter"/><polygon points="50,3 65,23 35,23" fill="#38BDF8"/><polygon points="30,33 70,33 70,43 42,43 42,49 70,49 70,59 30,59" fill="#FFFFFF"/><polygon points="30,63 38,63 50,78 62,63 70,63 55,83 45,83" fill="#FFFFFF"/></svg>
+                <span class="top-nav-brand">ZhiQR</span>
+            </a>
+        </div>
+        <div class="top-nav-center">
+            <a href="/" class="top-nav-item">首页</a>
+            <a href="/" class="top-nav-item">创建</a>
+            <a href="/" class="top-nav-item">模板</a>
+            <a href="/my-space" class="top-nav-item active">我的空间</a>
+            <a href="/scene" class="top-nav-item">Discover</a>
+        </div>
+        <div class="top-nav-right">
+            <button class="top-nav-icon-btn" title="搜索">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </button>
+            <button class="top-nav-icon-btn" title="通知">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            </button>
+            <div class="top-nav-avatar">
+                <span>张</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- 右侧内容区 -->
+    <section class="ms-content">
+
+        <!-- 空间标签栏 -->
+        <div class="ms-spaces-bar">
+            <button class="ms-space-tab active">
+                <span class="ms-space-tab-icon">📁</span>
+                <span>全部内容</span>
+                <span class="ms-space-tab-count">42</span>
+            </button>
+            <button class="ms-space-tab">
+                <span class="ms-space-tab-icon">🏠</span>
+                <span>我的生活</span>
+                <span class="ms-space-tab-count">12</span>
+            </button>
+            <button class="ms-space-tab">
+                <span class="ms-space-tab-icon">💼</span>
+                <span>我的工作</span>
+                <span class="ms-space-tab-count">8</span>
+            </button>
+            <button class="ms-space-tab">
+                <span class="ms-space-tab-icon">📚</span>
+                <span>我的学习</span>
+                <span class="ms-space-tab-count">6</span>
+            </button>
+            <button class="ms-space-tab">
+                <span class="ms-space-tab-icon">🛒</span>
+                <span>我的店铺</span>
+                <span class="ms-space-tab-count">4</span>
+            </button>
+            <button class="ms-space-tab">
+                <span class="ms-space-tab-icon">🎨</span>
+                <span>我的作品</span>
+                <span class="ms-space-tab-count">12</span>
+            </button>
+            <button class="ms-new-space-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                新建空间
+            </button>
+        </div>
+
+        <!-- 内容区顶部 -->
+        <div class="ms-content-header">
+            <h1 class="ms-content-title">全部内容</h1>
+            <div class="ms-content-actions">
+                <div class="ms-search-box">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" placeholder="搜索内容...">
+                </div>
+                <div class="ms-view-toggle">
+                    <button class="ms-view-btn active">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                    </button>
+                    <button class="ms-view-btn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                    </button>
+                </div>
+                <button class="ms-btn-new">新建</button>
+            </div>
+        </div>
+
+        <!-- 数据统计卡片 -->
+        <div class="ms-stats">
+            <div class="ms-stat-card">
+                <div class="ms-stat-number">32</div>
+                <div class="ms-stat-label">二维码</div>
+            </div>
+            <div class="ms-stat-card">
+                <div class="ms-stat-number">8</div>
+                <div class="ms-stat-label">Collections</div>
+            </div>
+            <div class="ms-stat-card">
+                <div class="ms-stat-number">1,258</div>
+                <div class="ms-stat-label">总扫码</div>
+            </div>
+            <div class="ms-stat-card">
+                <div class="ms-stat-number">12</div>
+                <div class="ms-stat-label">本月新增</div>
+            </div>
+        </div>
+
+        <!-- 内容标签筛选 -->
+        <div class="ms-filter">
+            <button class="ms-filter-tab active">全部</button>
+            <button class="ms-filter-tab">二维码</button>
+            <button class="ms-filter-tab">Collections</button>
+            <button class="ms-filter-tab">模板</button>
+            <button class="ms-filter-tab">文件</button>
+            <button class="ms-filter-tab">草稿</button>
+        </div>
+
+        <!-- 内容卡片区域 -->
+        <div class="ms-cards">
+            <div class="ms-card">
+                <div class="ms-card-cover" style="background: linear-gradient(135deg, #F472B6, #FB7185);">
+                    <div class="ms-card-actions-overlay">
+                        <button class="ms-card-action">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        </button>
+                        <button class="ms-card-action">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </button>
+                        <button class="ms-card-action">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="ms-card-body">
+                    <div class="ms-card-name">婚礼邀请函</div>
+                    <div class="ms-card-meta">
+                        <span class="ms-card-type">二维码</span>
+                        <span class="ms-card-time">2024-12-20</span>
+                    </div>
+                    <div class="ms-card-scans">扫码 236 次</div>
+                </div>
+            </div>
+            <div class="ms-card">
+                <div class="ms-card-cover" style="background: linear-gradient(135deg, #60A5FA, #818CF8);">
+                    <div class="ms-card-actions-overlay">
+                        <button class="ms-card-action">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        </button>
+                        <button class="ms-card-action">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </button>
+                        <button class="ms-card-action">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="ms-card-body">
+                    <div class="ms-card-name">个人简历</div>
+                    <div class="ms-card-meta">
+                        <span class="ms-card-type">二维码</span>
+                        <span class="ms-card-time">2024-12-18</span>
+                    </div>
+                    <div class="ms-card-scans">扫码 189 次</div>
+                </div>
+            </div>
+            <div class="ms-card">
+                <div class="ms-card-cover" style="background: linear-gradient(135deg, #34D399, #2DD4BF);">
+                    <div class="ms-card-actions-overlay">
+                        <button class="ms-card-action">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        </button>
+                        <button class="ms-card-action">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </button>
+                        <button class="ms-card-action">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="ms-card-body">
+                    <div class="ms-card-name">产品合集</div>
+                    <div class="ms-card-meta">
+                        <span class="ms-card-type">Collections</span>
+                        <span class="ms-card-time">2024-12-15</span>
+                    </div>
+                    <div class="ms-card-scans">扫码 412 次</div>
+                </div>
+            </div>
+            <div class="ms-card">
+                <div class="ms-card-cover" style="background: linear-gradient(135deg, #FBBF24, #F59E0B);">
+                    <div class="ms-card-actions-overlay">
+                        <button class="ms-card-action">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        </button>
+                        <button class="ms-card-action">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </button>
+                        <button class="ms-card-action">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="ms-card-body">
+                    <div class="ms-card-name">餐厅菜单</div>
+                    <div class="ms-card-meta">
+                        <span class="ms-card-type">模板</span>
+                        <span class="ms-card-time">2024-12-12</span>
+                    </div>
+                    <div class="ms-card-scans">扫码 98 次</div>
+                </div>
+            </div>
+            <div class="ms-card">
+                <div class="ms-card-cover" style="background: linear-gradient(135deg, #A78BFA, #C084FC);">
+                    <div class="ms-card-actions-overlay">
+                        <button class="ms-card-action">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        </button>
+                        <button class="ms-card-action">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </button>
+                        <button class="ms-card-action">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="ms-card-body">
+                    <div class="ms-card-name">课程资料</div>
+                    <div class="ms-card-meta">
+                        <span class="ms-card-type">文件</span>
+                        <span class="ms-card-time">2024-12-10</span>
+                    </div>
+                    <div class="ms-card-scans">扫码 156 次</div>
+                </div>
+            </div>
+            <div class="ms-card">
+                <div class="ms-card-cover" style="background: linear-gradient(135deg, #6366F1, #3B82F6);">
+                    <div class="ms-card-actions-overlay">
+                        <button class="ms-card-action">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        </button>
+                        <button class="ms-card-action">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </button>
+                        <button class="ms-card-action">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="ms-card-body">
+                    <div class="ms-card-name">活动报名表单</div>
+                    <div class="ms-card-meta">
+                        <span class="ms-card-type">二维码</span>
+                        <span class="ms-card-time">2024-12-08</span>
+                    </div>
+                    <div class="ms-card-scans">扫码 320 次</div>
+                </div>
+            </div>
+            <div class="ms-card">
+                <div class="ms-card-cover" style="background: linear-gradient(135deg, #94A3B8, #64748B);">
+                    <div class="ms-card-actions-overlay">
+                        <button class="ms-card-action">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        </button>
+                        <button class="ms-card-action">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </button>
+                        <button class="ms-card-action">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="ms-card-body">
+                    <div class="ms-card-name">设备管理档案</div>
+                    <div class="ms-card-meta">
+                        <span class="ms-card-type">模板</span>
+                        <span class="ms-card-time">2024-12-05</span>
+                    </div>
+                    <div class="ms-card-scans">扫码 67 次</div>
+                </div>
+            </div>
+            <div class="ms-card">
+                <div class="ms-card-cover" style="background: linear-gradient(135deg, #EC4899, #D946EF);">
+                    <div class="ms-card-actions-overlay">
+                        <button class="ms-card-action">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        </button>
+                        <button class="ms-card-action">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </button>
+                        <button class="ms-card-action">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="ms-card-body">
+                    <div class="ms-card-name">摄影作品集</div>
+                    <div class="ms-card-meta">
+                        <span class="ms-card-type">Collections</span>
+                        <span class="ms-card-time">2024-12-02</span>
+                    </div>
+                    <div class="ms-card-scans">扫码 278 次</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 分页 -->
+        <div class="ms-pagination">
+            <button class="ms-page-btn" disabled>&lt;</button>
+            <button class="ms-page-btn active">1</button>
+            <button class="ms-page-btn">2</button>
+            <button class="ms-page-btn">3</button>
+            <button class="ms-page-btn">...</button>
+            <button class="ms-page-btn">6</button>
+            <button class="ms-page-btn">&gt;</button>
+        </div>
+
+    </section>
+
+</div>
+
+</body>
+</html>

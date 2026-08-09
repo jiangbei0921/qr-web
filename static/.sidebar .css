@@ -1,0 +1,14 @@
+.sidebar .logo h1,
+.sidebar .nav-item span {
+    opacity: 0;
+    white-space: nowrap;
+    transition: opacity 0.15s ease;
+    pointer-events: none;
+}
+
+.sidebar:hover .logo h1,
+.sidebar:hover .nav-item span {
+    opacity: 1;
+    transition: opacity 0.15s ease;
+    pointer-events: auto;
+}

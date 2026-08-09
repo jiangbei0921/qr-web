@@ -1,0 +1,9 @@
+/* 收起时：Logo标题 + 导航文字 + 统计面板 → 全部透明 */
+.sidebar .logo h1,
+.sidebar .nav-item span,
+.sidebar .stats { opacity: 0; }
+
+/* 展开时：全部淡入显示 */
+.sidebar:hover .logo h1,
+.sidebar:hover .nav-item span,
+.sidebar:hover .stats { opacity: 1; }

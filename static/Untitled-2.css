@@ -1,0 +1,5 @@
+/* 收起时 */
+.sidebar .nav-item { justify-content: center; padding: 12px 8px; }
+
+/* 展开时 → 与收起时完全一致，静止不动 */
+.sidebar:hover .nav-item { justify-content: center; padding: 12px 8px; }

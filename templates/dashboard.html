@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZhiQR - 企业级二维码管理平台</title>
+    <link rel="stylesheet" href="/static/design-system.css">
+    <link rel="stylesheet" href="/static/enterprise.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 认证区域 -->
+        <div id="auth-section" class="auth-section">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <h1>ZhiQR</h1>
+                    <p>企业级二维码管理平台</p>
+                </div>
+
+                <!-- 登录标签 -->
+                <div id="login-tab" class="auth-tab active">
+                    <h2>登录</h2>
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label>邮箱</label>
+                            <input type="email" id="login-email" required placeholder="your@email.com">
+                        </div>
+                        <div class="form-group">
+                            <label>密码</label>
+                            <input type="password" id="login-password" required placeholder="至少6个字符">
+                        </div>
+                        <button type="submit" class="btn-primary">登录</button>
+                        <p class="switch-tab">还没有账户？<a href="#" onclick="switchAuthTab('register')">立即注册</a></p>
+                    </form>
+                </div>
+
+                <!-- 注册标签 -->
+                <div id="register-tab" class="auth-tab">
+                    <h2>注册</h2>
+                    <form id="register-form">
+                        <div class="form-group">
+                            <label>用户名</label>
+                            <input type="text" id="register-username" required placeholder="3-20个字符">
+                        </div>
+                        <div class="form-group">
+                            <label>邮箱</label>
+                            <input type="email" id="register-email" required placeholder="your@email.com">
+                        </div>
+                        <div class="form-group">
+                            <label>密码</label>
+                            <input type="password" id="register-password" required placeholder="至少6个字符">
+                        </div>
+                        <div class="form-group">
+                            <label>组织名称</label>
+                            <input type="text" id="register-org" placeholder="公司/组织名称">
+                        </div>
+                        <button type="submit" class="btn-primary">注册</button>
+                        <p class="switch-tab">已有账户？<a href="#" onclick="switchAuthTab('login')">立即登录</a></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- 应用主区域 -->
+        <div id="app-section" style="display: none;" class="app-section">
+            <!-- 顶部导航 -->
+            <nav class="top-nav">
+                <div class="nav-brand">
+                    <span class="logo">📱 ZhiQR</span>
+                    <span class="version">v2.0</span>
+                </div>
+                <div class="nav-menu">
+                    <a href="#" class="nav-item active" data-section="dashboard">仪表板</a>
+                    <a href="#" class="nav-item" data-section="qrcodes">活码管理</a>
+                    <a href="#" class="nav-item" data-section="forms">表单管理</a>
+                    <a href="#" class="nav-item" data-section="workorders">工单系统</a>
+                    <a href="#" class="nav-item" data-section="versions">版本管理</a>
+                    <a href="#" class="nav-item" data-section="notifications" id="nav-notifications">
+                        通知中心
+                        <span class="nav-badge" id="nav-notif-badge" style="display:none">0</span>
+                    </a>
+                    <a href="#" class="nav-item" data-section="search" id="nav-search">
+                        统一搜索
+                    </a>
+                    <a href="#" class="nav-item" data-section="batch" id="nav-batch">
+                        批量操作
+                    </a>
+                </div>
+                <div class="nav-user">
+                    <span id="username-display"></span>
+                    <button id="logout-btn" class="btn-small">登出</button>
+                </div>
+            </nav>
+
+            <!-- 主内容区 -->
+            <main class="main-content">
+                <!-- 仪表板 -->
+                <section id="dashboard-section" class="content-section active">
+                    <div class="dh-hero">
+                        <div class="dh-hero-bg-glow"></div>
+                        <div class="dh-hero-content">
+                            <div class="dh-hero-left">
+                                <p class="dh-hero-greeting" id="dhGreeting">下午好</p>
+                                <h1 class="dh-hero-title">今天想分享什么？</h1>
+                                <p class="dh-hero-subtitle">一个二维码，<br>连接你的所有数字内容。</p>
+                                <div class="dh-hero-actions">
+                                    <button class="dh-hero-btn-primary" onclick="window.location.href='/?tab=generator'">创建内容</button>
+                                    <button class="dh-hero-btn-secondary" onclick="window.location.href='/templates-center'">浏览模板</button>
+                                </div>
+                            </div>
+                            <div class="dh-hero-right">
+                                <div class="dh-hero-illustration">
+                                    <svg viewBox="0 0 240 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="120" cy="100" r="80" stroke="rgba(79,70,229,0.15)" stroke-width="2" stroke-dasharray="8 6"/>
+                                        <rect x="60" y="40" width="70" height="70" rx="16" fill="rgba(79,70,229,0.08)" stroke="rgba(79,70,229,0.2)" stroke-width="1.5" transform="rotate(-8 95 75)"/>
+                                        <rect x="110" y="80" width="70" height="70" rx="16" fill="rgba(124,58,237,0.06)" stroke="rgba(124,58,237,0.15)" stroke-width="1.5" transform="rotate(5 145 115)"/>
+                                        <circle cx="85" cy="60" r="6" fill="rgba(79,70,229,0.25)"/>
+                                        <circle cx="130" cy="95" r="4" fill="rgba(124,58,237,0.2)"/>
+                                        <circle cx="160" cy="55" r="5" fill="rgba(168,85,247,0.18)"/>
+                                        <line x1="40" y1="150" x2="85" y2="120" stroke="rgba(79,70,229,0.12)" stroke-width="1.5" stroke-linecap="round"/>
+                                        <line x1="155" y1="155" x2="200" y2="135" stroke="rgba(124,58,237,0.1)" stroke-width="1.5" stroke-linecap="round"/>
+                                        <polygon points="200,30 210,55 235,60 216,78 222,103 200,90 178,103 184,78 165,60 190,55" fill="rgba(79,70,229,0.1)" stroke="rgba(79,70,229,0.15)" stroke-width="1"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="continue-creating" id="continue-creating">
+                        <div class="cc-header">
+                            <h3>继续创作</h3>
+                            <span class="cc-subtitle">继续编辑你最近的内容</span>
+                        </div>
+                        <div class="cc-grid" id="cc-grid">
+                            <div class="cc-card cc-card-placeholder">
+                                <div class="cc-card-icon">📝</div>
+                                <p>加载中...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="recent-content">
+                        <div class="rc-header">
+                            <h3>最近内容</h3>
+                        </div>
+                        <div class="rc-grid" id="rc-grid">
+                            <div class="rc-card rc-card-placeholder">
+                                <p>加载中...</p>
+                            </div>
+                        </div>
+                        <div class="rc-pagination" id="rc-pagination" style="display:none"></div>
+                    </div>
+
+                    <div class="scene-recommendation">
+                        <div class="sr-header">
+                            <h3>场景推荐</h3>
+                            <span class="sr-subtitle">根据你的场景，找到合适的模板</span>
+                        </div>
+                        <div class="sr-grid" id="sr-grid">
+                            <div class="sr-card" data-scene="personal" onclick="window.enterpriseApp.navigateToScene('personal')">
+                                <div class="sr-illustration">
+                                    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="40" cy="30" r="14" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                                        <path d="M16 68c0-13.255 10.745-24 24-24s24 10.745 24 24" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                                        <circle cx="48" cy="24" r="3" fill="currentColor" opacity="0.6"/>
+                                        <circle cx="54" cy="28" r="2" fill="currentColor" opacity="0.4"/>
+                                        <path d="M28 48l4 4 8-8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </div>
+                                <h4 class="sr-card-title">个人</h4>
+                                <p class="sr-card-desc">个人主页、社交名片</p>
+                            </div>
+                            <div class="sr-card" data-scene="work" onclick="window.enterpriseApp.navigateToScene('work')">
+                                <div class="sr-illustration">
+                                    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect x="14" y="22" width="52" height="40" rx="4" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                                        <path d="M28 22V16c0-3.314 2.686-6 6-6h12c3.314 0 6 2.686 6 6v6" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                                        <rect x="34" y="32" width="12" height="2" rx="1" fill="currentColor" opacity="0.5"/>
+                                        <rect x="34" y="38" width="16" height="2" rx="1" fill="currentColor" opacity="0.5"/>
+                                        <rect x="34" y="44" width="8" height="2" rx="1" fill="currentColor" opacity="0.5"/>
+                                        <circle cx="50" cy="52" r="6" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                                        <path d="M54 56l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                    </svg>
+                                </div>
+                                <h4 class="sr-card-title">工作</h4>
+                                <p class="sr-card-desc">求职简历、企业名片</p>
+                            </div>
+                            <div class="sr-card" data-scene="study" onclick="window.enterpriseApp.navigateToScene('study')">
+                                <div class="sr-illustration">
+                                    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M14 56V28l26-14 26 14v28" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
+                                        <path d="M14 28l26 14 26-14" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                                        <path d="M40 42v16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                        <line x1="28" y1="66" x2="52" y2="66" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                        <rect x="22" y="46" width="36" height="1.5" rx="0.75" fill="currentColor" opacity="0.4"/>
+                                    </svg>
+                                </div>
+                                <h4 class="sr-card-title">学习</h4>
+                                <p class="sr-card-desc">课程资料、在线学习</p>
+                            </div>
+                            <div class="sr-card" data-scene="activity" onclick="window.enterpriseApp.navigateToScene('activity')">
+                                <div class="sr-illustration">
+                                    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="40" cy="38" r="22" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                                        <circle cx="40" cy="38" r="12" stroke="currentColor" stroke-width="1.5" fill="none" stroke-dasharray="4 3"/>
+                                        <path d="M40 16v6M40 54v6M22 38h-6M64 38h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                        <circle cx="40" cy="38" r="4" fill="currentColor" opacity="0.6"/>
+                                        <path d="M40 26l6 12-6 12-6-12z" fill="currentColor" opacity="0.15"/>
+                                    </svg>
+                                </div>
+                                <h4 class="sr-card-title">活动</h4>
+                                <p class="sr-card-desc">活动邀请、会议签到</p>
+                            </div>
+                            <div class="sr-card" data-scene="business" onclick="window.enterpriseApp.navigateToScene('business')">
+                                <div class="sr-illustration">
+                                    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect x="18" y="14" width="44" height="52" rx="6" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                                        <rect x="24" y="24" width="32" height="20" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                                        <path d="M32 44l4 4 12-12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <rect x="26" y="50" width="28" height="2" rx="1" fill="currentColor" opacity="0.4"/>
+                                        <rect x="26" y="54" width="20" height="2" rx="1" fill="currentColor" opacity="0.3"/>
+                                    </svg>
+                                </div>
+                                <h4 class="sr-card-title">商业</h4>
+                                <p class="sr-card-desc">产品推广、品牌营销</p>
+                            </div>
+                            <div class="sr-card" data-scene="family" onclick="window.enterpriseApp.navigateToScene('family')">
+                                <div class="sr-illustration">
+                                    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M20 66V42l20-18 20 18v24" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
+                                        <path d="M20 42l20-18 20 18" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                                        <rect x="32" y="48" width="16" height="18" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                                        <circle cx="40" cy="38" r="2" fill="currentColor" opacity="0.5"/>
+                                        <path d="M28 66h24" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                    </svg>
+                                </div>
+                                <h4 class="sr-card-title">家庭</h4>
+                                <p class="sr-card-desc">家务管理、亲情分享</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-stats" id="dashboard-stats">
+                        <button class="ds-toggle" id="ds-toggle" onclick="window.enterpriseApp.toggleStats()">
+                            <span class="ds-toggle-label">数据统计</span>
+                            <span class="ds-toggle-icon" id="ds-toggle-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 12 15 18 9"/>
+                                </svg>
+                            </span>
+                        </button>
+                        <div class="ds-body" id="ds-body" style="display:none">
+                            <div class="ds-grid">
+                                <div class="ds-card">
+                                    <div class="ds-card-icon ds-icon-qrcodes">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                                    </div>
+                                    <div class="ds-card-info">
+                                        <span class="ds-card-label">活码总数</span>
+                                        <span class="ds-card-value" id="stat-qrcodes" data-target="0">0</span>
+                                    </div>
+                                </div>
+                                <div class="ds-card">
+                                    <div class="ds-card-icon ds-icon-scans">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    </div>
+                                    <div class="ds-card-info">
+                                        <span class="ds-card-label">总扫码数</span>
+                                        <span class="ds-card-value" id="stat-scans" data-target="0">0</span>
+                                    </div>
+                                </div>
+                                <div class="ds-card">
+                                    <div class="ds-card-icon ds-icon-submissions">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                                    </div>
+                                    <div class="ds-card-info">
+                                        <span class="ds-card-label">表单提交</span>
+                                        <span class="ds-card-value" id="stat-submissions" data-target="0">0</span>
+                                    </div>
+                                </div>
+                                <div class="ds-card">
+                                    <div class="ds-card-icon ds-icon-today">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                    </div>
+                                    <div class="ds-card-info">
+                                        <span class="ds-card-label">今日扫码</span>
+                                        <span class="ds-card-value" id="stat-today" data-target="0">0</span>
+                                    </div>
+                                </div>
+                                <div class="ds-card">
+                                    <div class="ds-card-icon ds-icon-week">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                    </div>
+                                    <div class="ds-card-info">
+                                        <span class="ds-card-label">本周扫码</span>
+                                        <span class="ds-card-value" id="stat-week" data-target="0">0</span>
+                                    </div>
+                                </div>
+                                <div class="ds-card">
+                                    <div class="ds-card-icon ds-icon-links">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                                    </div>
+                                    <div class="ds-card-info">
+                                        <span class="ds-card-label">动态链接</span>
+                                        <span class="ds-card-value" id="stat-links" data-target="0">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 活码管理 -->
+                <section id="qrcodes-section" class="content-section">
+                    <div class="section-header">
+                        <h2>活码管理</h2>
+                        <button class="btn-primary" id="create-qrcode-btn">+ 新建活码</button>
+                    </div>
+
+                    <div class="qrcodes-grid" id="qrcodes-grid">
+                        <div class="qrcode-card placeholder">
+                            <p>点击"新建活码"开始创建</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 表单管理 -->
+                <section id="forms-section" class="content-section">
+                    <div class="section-header">
+                        <h2>表单管理</h2>
+                        <button class="btn-primary" id="create-form-btn">+ 新建表单</button>
+                    </div>
+                    <p>表单管理功能开发中...</p>
+                </section>
+
+                <!-- 工单系统 -->
+                <section id="workorders-section" class="content-section">
+                    <div class="section-header">
+                        <h2>工单系统</h2>
+                        <button class="btn-primary">+ 新建工单</button>
+                    </div>
+                    <p>工单系统功能开发中...</p>
+                </section>
+
+                <!-- 版本管理 -->
+                <section id="versions-section" class="content-section">
+                    <div class="section-header">
+                        <h2>版本管理</h2>
+                        <div class="version-toolbar">
+                            <select id="version-resource-type" class="filter-select">
+                                <option value="qrcode">二维码版本</option>
+                                <option value="form">表单版本</option>
+                                <option value="template">模板版本</option>
+                            </select>
+                            <input type="text" id="version-resource-id" placeholder="资源ID" class="filter-input" style="width: 120px;">
+                            <button class="btn-primary" id="version-search-btn">查询版本</button>
+                        </div>
+                    </div>
+
+                    <div class="version-layout">
+                        <div class="version-timeline-panel" id="version-timeline-panel">
+                            <div class="version-timeline-header">
+                                <span class="version-count" id="version-count-label">共 0 个版本</span>
+                                <button class="btn-small btn-outline" id="version-refresh-btn">刷新</button>
+                            </div>
+                            <div class="version-timeline" id="version-timeline">
+                                <div class="version-empty">
+                                    <div class="version-empty-icon">📋</div>
+                                    <p>请选择资源类型并输入资源ID查询版本历史</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="version-detail-panel" id="version-detail-panel">
+                            <div class="version-detail-header">
+                                <h3>版本详情</h3>
+                                <div class="version-detail-actions">
+                                    <button class="btn-small btn-outline" id="version-compare-btn" disabled>比较差异</button>
+                                    <button class="btn-small btn-warning" id="version-rollback-btn" disabled>回滚到此版本</button>
+                                </div>
+                            </div>
+                            <div class="version-detail-content" id="version-detail-content">
+                                <div class="version-empty">
+                                    <div class="version-empty-icon">📄</div>
+                                    <p>点击左侧版本查看详情</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 版本比较模态框 -->
+                <div id="version-compare-modal" class="modal">
+                    <div class="modal-content" style="max-width: 900px;">
+                        <div class="modal-header">
+                            <h3>版本差异比较</h3>
+                            <button class="modal-close" onclick="closeModal('version-compare-modal')">&times;</button>
+                        </div>
+                        <div class="version-compare-body">
+                            <div class="version-compare-select">
+                                <div class="compare-version-item">
+                                    <label>版本 A</label>
+                                    <select id="compare-v1-select" class="filter-select"></select>
+                                </div>
+                                <span class="compare-vs">VS</span>
+                                <div class="compare-version-item">
+                                    <label>版本 B</label>
+                                    <select id="compare-v2-select" class="filter-select"></select>
+                                </div>
+                            </div>
+                            <button class="btn-primary" id="version-compare-execute">开始比较</button>
+                            <div class="version-diff-result" id="version-diff-result"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 版本回滚确认模态框 -->
+                <div id="version-rollback-modal" class="modal">
+                    <div class="modal-content" style="max-width: 500px;">
+                        <div class="modal-header">
+                            <h3>确认回滚</h3>
+                            <button class="modal-close" onclick="closeModal('version-rollback-modal')">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <p style="color: #EF4444; margin-bottom: 16px;">⚠ 回滚操作将恢复到此版本的数据状态，当前数据将被保存为新版本。</p>
+                            <div class="form-group">
+                                <label>回滚备注（可选）</label>
+                                <input type="text" id="rollback-remark" placeholder="例如：紧急回滚到稳定版本" style="width: 100%; padding: 8px; border: 1px solid #E2E8F0; border-radius: 6px;">
+                            </div>
+                            <div class="version-rollback-actions">
+                                <button class="btn-secondary" onclick="closeModal('version-rollback-modal')">取消</button>
+                                <button class="btn-warning" id="version-rollback-confirm">确认回滚</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 版本备注编辑模态框 -->
+                <div id="version-remark-modal" class="modal">
+                    <div class="modal-content" style="max-width: 500px;">
+                        <div class="modal-header">
+                            <h3>编辑版本备注</h3>
+                            <button class="modal-close" onclick="closeModal('version-remark-modal')">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>版本备注</label>
+                                <textarea id="version-remark-input" rows="3" placeholder="添加版本备注说明..." style="width: 100%; padding: 8px; border: 1px solid #E2E8F0; border-radius: 6px; resize: vertical;"></textarea>
+                            </div>
+                            <div class="version-rollback-actions">
+                                <button class="btn-secondary" onclick="closeModal('version-remark-modal')">取消</button>
+                                <button class="btn-primary" id="version-remark-save">保存备注</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 通知中心 -->
+                <section id="notifications-section" class="content-section">
+                    <div class="section-header">
+                        <h2>通知中心</h2>
+                        <div class="notif-header-actions">
+                            <button class="btn-small btn-outline" id="notif-settings-btn">通知设置</button>
+                            <button class="btn-small btn-primary" id="notif-read-all-btn">全部已读</button>
+                        </div>
+                    </div>
+
+                    <div class="notif-layout">
+                        <div class="notif-sidebar">
+                            <div class="notif-category-list">
+                                <div class="notif-category-item active" data-category="">
+                                    <span class="notif-cat-icon">📬</span>
+                                    <span class="notif-cat-label">全部通知</span>
+                                    <span class="notif-cat-count" id="notif-cat-total">0</span>
+                                </div>
+                                <div class="notif-category-item" data-category="system">
+                                    <span class="notif-cat-icon">🔔</span>
+                                    <span class="notif-cat-label">系统通知</span>
+                                    <span class="notif-cat-count" id="notif-cat-system">0</span>
+                                </div>
+                                <div class="notif-category-item" data-category="qrcode">
+                                    <span class="notif-cat-icon">📱</span>
+                                    <span class="notif-cat-label">二维码</span>
+                                    <span class="notif-cat-count" id="notif-cat-qrcode">0</span>
+                                </div>
+                                <div class="notif-category-item" data-category="workorder">
+                                    <span class="notif-cat-icon">🔧</span>
+                                    <span class="notif-cat-label">工单</span>
+                                    <span class="notif-cat-count" id="notif-cat-workorder">0</span>
+                                </div>
+                                <div class="notif-category-item" data-category="inspection">
+                                    <span class="notif-cat-icon">🔍</span>
+                                    <span class="notif-cat-label">巡检</span>
+                                    <span class="notif-cat-count" id="notif-cat-inspection">0</span>
+                                </div>
+                                <div class="notif-category-item" data-category="approval">
+                                    <span class="notif-cat-icon">✅</span>
+                                    <span class="notif-cat-label">审批</span>
+                                    <span class="notif-cat-count" id="notif-cat-approval">0</span>
+                                </div>
+                                <div class="notif-category-item" data-category="security">
+                                    <span class="notif-cat-icon">🛡</span>
+                                    <span class="notif-cat-label">安全</span>
+                                    <span class="notif-cat-count" id="notif-cat-security">0</span>
+                                </div>
+                                <div class="notif-category-item" data-category="maintenance">
+                                    <span class="notif-cat-icon">⚙</span>
+                                    <span class="notif-cat-label">系统维护</span>
+                                    <span class="notif-cat-count" id="notif-cat-maintenance">0</span>
+                                </div>
+                            </div>
+                            <div class="notif-status-filter">
+                                <button class="notif-status-btn active" data-status="">全部</button>
+                                <button class="notif-status-btn" data-status="unread">未读</button>
+                                <button class="notif-status-btn" data-status="read">已读</button>
+                                <button class="notif-status-btn" data-status="archived">归档</button>
+                            </div>
+                        </div>
+
+                        <div class="notif-main">
+                            <div class="notif-toolbar">
+                                <input type="text" class="notif-search" id="notif-search-input" placeholder="搜索通知标题或内容...">
+                                <button class="btn-small btn-outline" id="notif-refresh-btn">刷新</button>
+                            </div>
+                            <div class="notif-list" id="notif-list">
+                                <div class="notif-empty">
+                                    <div class="notif-empty-icon">📭</div>
+                                    <p>暂无通知</p>
+                                </div>
+                            </div>
+                            <div class="notif-pagination" id="notif-pagination" style="display:none"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ============ 统一搜索中心 ============ -->
+                <section id="search-section" class="content-section">
+                    <div class="section-header">
+                        <h2>统一搜索</h2>
+                    </div>
+
+                    <div class="search-center">
+                        <div class="search-bar-area">
+                            <div class="search-input-wrapper">
+                                <span class="search-icon">🔍</span>
+                                <input type="text" id="search-input" class="search-input-main" placeholder="搜索全部内容... (支持 AND/OR/NOT)" autocomplete="off">
+                                <div class="search-suggestions" id="search-suggestions" style="display:none"></div>
+                            </div>
+                            <button class="btn-primary" id="search-btn">搜索</button>
+                        </div>
+
+                        <div class="search-advanced-toggle" id="search-advanced-toggle">
+                            <span>高级搜索</span>
+                            <span class="search-toggle-icon">▼</span>
+                        </div>
+
+                        <div class="search-advanced" id="search-advanced" style="display:none">
+                            <div class="search-filter-row">
+                                <div class="search-filter-group">
+                                    <label>资源类型</label>
+                                    <select id="search-type" class="search-select">
+                                        <option value="">全部类型</option>
+                                        <option value="qrcode">📱 二维码</option>
+                                        <option value="file">📁 文件</option>
+                                        <option value="form">📋 表单</option>
+                                        <option value="workorder">🔧 工单</option>
+                                        <option value="inspection">🔍 巡检</option>
+                                        <option value="user">👤 用户</option>
+                                        <option value="notification">🔔 通知</option>
+                                    </select>
+                                </div>
+                                <div class="search-filter-group">
+                                    <label>布尔运算</label>
+                                    <select id="search-operator" class="search-select">
+                                        <option value="AND">AND（同时满足）</option>
+                                        <option value="OR">OR（任意满足）</option>
+                                        <option value="NOT">NOT（排除）</option>
+                                    </select>
+                                </div>
+                                <div class="search-filter-group">
+                                    <label>状态</label>
+                                    <select id="search-status" class="search-select">
+                                        <option value="">不限</option>
+                                    </select>
+                                </div>
+                                <div class="search-filter-group">
+                                    <label>创建人</label>
+                                    <select id="search-creator" class="search-select">
+                                        <option value="">不限</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="search-filter-row">
+                                <div class="search-filter-group">
+                                    <label>开始日期</label>
+                                    <input type="date" id="search-date-from" class="search-date">
+                                </div>
+                                <div class="search-filter-group">
+                                    <label>结束日期</label>
+                                    <input type="date" id="search-date-to" class="search-date">
+                                </div>
+                                <div class="search-filter-group">
+                                    <label>标签（文件）</label>
+                                    <input type="text" id="search-tags" class="search-tag-input" placeholder="输入标签关键词">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="search-toolbar">
+                            <div class="search-toolbar-left">
+                                <span class="search-result-count" id="search-result-count"></span>
+                                <button class="btn-small btn-outline" id="search-save-btn" style="display:none">💾 保存搜索</button>
+                            </div>
+                            <div class="search-toolbar-right">
+                                <span class="search-history-label" id="search-history-toggle">📋 最近搜索</span>
+                                <span class="search-saved-label" id="search-saved-toggle">📌 已保存</span>
+                            </div>
+                        </div>
+
+                        <div class="search-history-panel" id="search-history-panel" style="display:none">
+                            <div class="search-history-header">
+                                <span>最近搜索</span>
+                                <button class="btn-small btn-outline" id="search-history-clear">清除全部</button>
+                            </div>
+                            <div class="search-history-list" id="search-history-list"></div>
+                        </div>
+
+                        <div class="search-saved-panel" id="search-saved-panel" style="display:none">
+                            <div class="search-saved-list" id="search-saved-list"></div>
+                        </div>
+
+                        <div class="search-results" id="search-results">
+                            <div class="search-empty">
+                                <div class="search-empty-icon">🔍</div>
+                                <p>输入关键词开始搜索</p>
+                            </div>
+                        </div>
+
+                        <div class="search-pagination" id="search-pagination" style="display:none"></div>
+                    </div>
+                </section>
+
+                <!-- 搜索保存模态框 -->
+                <div id="search-save-modal" class="modal">
+                    <div class="modal-content" style="max-width: 480px;">
+                        <div class="modal-header">
+                            <h3>保存搜索</h3>
+                            <button class="modal-close" onclick="closeModal('search-save-modal')">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>搜索名称</label>
+                                <input type="text" id="search-save-name" class="form-input" placeholder="例如：我的常用搜索">
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn-secondary" onclick="closeModal('search-save-modal')">取消</button>
+                                <button class="btn-primary" id="search-save-confirm">保存</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============ 批量操作中心 ============ -->
+                <section id="batch-section" class="content-section">
+                    <div class="section-header">
+                        <h2>批量操作中心</h2>
+                    </div>
+
+                    <div class="batch-center">
+                        <div class="batch-create-area">
+                            <div class="batch-create-card">
+                                <h3>新建批量任务</h3>
+                                <div class="batch-form-row">
+                                    <div class="batch-form-group">
+                                        <label>资源类型</label>
+                                        <select id="batch-resource-type" class="batch-select">
+                                            <option value="qrcode">📱 二维码</option>
+                                            <option value="file">📁 文件</option>
+                                            <option value="form">📋 表单</option>
+                                            <option value="workorder">🔧 工单</option>
+                                            <option value="inspection">🔍 巡检</option>
+                                        </select>
+                                    </div>
+                                    <div class="batch-form-group">
+                                        <label>操作类型</label>
+                                        <select id="batch-task-type" class="batch-select">
+                                            <option value="delete">🗑 删除</option>
+                                            <option value="modify">✏ 修改</option>
+                                            <option value="toggle">🔘 启停</option>
+                                            <option value="export">📥 导出</option>
+                                            <option value="tag">🏷 标签</option>
+                                            <option value="archive">📁 归档</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="batch-form-row" id="batch-extra-fields" style="display:none">
+                                    <div class="batch-form-group" id="batch-toggle-group" style="display:none">
+                                        <label>目标状态</label>
+                                        <select id="batch-target-state" class="batch-select">
+                                            <option value="1">启用</option>
+                                            <option value="0">禁用</option>
+                                        </select>
+                                    </div>
+                                    <div class="batch-form-group" id="batch-tag-group" style="display:none">
+                                        <label>标签值</label>
+                                        <input type="text" id="batch-tag-value" class="batch-input" placeholder="输入标签">
+                                    </div>
+                                </div>
+                                <div class="batch-form-group" style="margin-top:8px;">
+                                    <label>资源ID（逗号或换行分隔，最多10000条）</label>
+                                    <textarea id="batch-resource-ids" class="batch-textarea" rows="4" placeholder="输入资源ID，例如：&#10;1,2,3,4,5&#10;或每行一个"></textarea>
+                                </div>
+                                <div class="batch-form-actions">
+                                    <button class="btn-primary" id="batch-submit-btn">提交批量任务</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="batch-tasks-area">
+                            <div class="batch-tasks-header">
+                                <h3>任务列表</h3>
+                                <div class="batch-tasks-filters">
+                                    <select id="batch-status-filter" class="batch-filter-select">
+                                        <option value="">全部状态</option>
+                                        <option value="pending">待执行</option>
+                                        <option value="running">执行中</option>
+                                        <option value="completed">已完成</option>
+                                        <option value="failed">已失败</option>
+                                        <option value="cancelled">已取消</option>
+                                        <option value="rolled_back">已回滚</option>
+                                    </select>
+                                    <button class="btn-small btn-outline" id="batch-refresh-btn">刷新</button>
+                                </div>
+                            </div>
+                            <div class="batch-tasks-list" id="batch-tasks-list">
+                                <div class="batch-empty">暂无批量任务</div>
+                            </div>
+                            <div class="batch-pagination" id="batch-pagination" style="display:none"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 批量任务详情模态框 -->
+                <div id="batch-detail-modal" class="modal">
+                    <div class="modal-content" style="max-width: 800px;">
+                        <div class="modal-header">
+                            <h3>任务详情</h3>
+                            <button class="modal-close" onclick="closeModal('batch-detail-modal')">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="batch-detail-info" id="batch-detail-info"></div>
+                            <div class="batch-detail-progress" id="batch-detail-progress">
+                                <div class="batch-progress-bar">
+                                    <div class="batch-progress-fill" id="batch-progress-fill" style="width:0%"></div>
+                                </div>
+                                <span class="batch-progress-text" id="batch-progress-text">0%</span>
+                            </div>
+                            <div class="batch-detail-stats" id="batch-detail-stats"></div>
+                            <div class="batch-detail-items" id="batch-detail-items">
+                                <h4>处理明细</h4>
+                                <div class="batch-items-table" id="batch-items-table"></div>
+                            </div>
+                            <div class="batch-detail-actions" id="batch-detail-actions"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Webhook 管理模态框 -->
+                <div id="webhook-modal" class="modal">
+                    <div class="modal-content" style="max-width: 700px;">
+                        <div class="modal-header">
+                            <h3>Webhook 管理</h3>
+                            <button class="modal-close" onclick="closeModal('webhook-modal')">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="webhook-toolbar">
+                                <button class="btn-primary" id="webhook-add-btn">添加 Webhook</button>
+                            </div>
+                            <div id="webhook-list"></div>
+                            <div id="webhook-form" style="display:none; margin-top:16px; padding:16px; background:#F8FAFC; border-radius:8px;">
+                                <h4 id="webhook-form-title">新建 Webhook</h4>
+                                <div class="form-group">
+                                    <label>名称</label>
+                                    <input type="text" id="webhook-name" class="form-input" placeholder="例如：钉钉通知">
+                                </div>
+                                <div class="form-group">
+                                    <label>URL</label>
+                                    <input type="url" id="webhook-url" class="form-input" placeholder="https://hooks.example.com/webhook">
+                                </div>
+                                <div class="form-group">
+                                    <label>密钥（可选）</label>
+                                    <input type="text" id="webhook-secret" class="form-input" placeholder="用于验证请求来源">
+                                </div>
+                                <div class="form-group">
+                                    <label>事件</label>
+                                    <div class="webhook-events" id="webhook-events">
+                                    </div>
+                                </div>
+                                <div class="form-actions" style="margin-top:16px;">
+                                    <button class="btn-secondary" id="webhook-cancel-btn">取消</button>
+                                    <button class="btn-primary" id="webhook-save-btn">保存</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 通知设置模态框 -->
+                <div id="notif-settings-modal" class="modal">
+                    <div class="modal-content" style="max-width: 700px;">
+                        <div class="modal-header">
+                            <h3>通知设置</h3>
+                            <button class="modal-close" onclick="closeModal('notif-settings-modal')">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="notif-settings-table" id="notif-settings-table">
+                                <div class="notif-settings-row notif-settings-header">
+                                </div>
+                            </div>
+                            <div class="form-actions" style="margin-top:16px;">
+                                <button class="btn-secondary" onclick="closeModal('notif-settings-modal')">取消</button>
+                                <button class="btn-primary" id="notif-settings-save">保存设置</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 创建活码模态框 -->
+    <div id="create-qrcode-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>新建活码</h3>
+                <button class="modal-close" onclick="closeModal('create-qrcode-modal')">&times;</button>
+            </div>
+            <form id="create-qrcode-form" class="modal-form">
+                <div class="form-group">
+                    <label>标题</label>
+                    <input type="text" id="qrcode-title" required placeholder="例如：设备A1点检码">
+                </div>
+                <div class="form-group">
+                    <label>类型</label>
+                    <select id="qrcode-type">
+                        <option value="text">文本</option>
+                        <option value="url">链接</option>
+                        <option value="file">文件</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>样式</label>
+                    <div class="style-options">
+                        <label class="radio-label">
+                            <input type="radio" name="qr-style" value="square" checked> 方形
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="qr-style" value="rounded"> 圆角
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>颜色</label>
+                    <input type="color" id="qrcode-color" value="#000000">
+                </div>
+                <button type="submit" class="btn-primary">创建</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="/static/enterprise.js"></script>
+<script>
+(function() {
+    if (typeof SmartCodeEnterprise === 'undefined') {
+        console.error('SmartCodeEnterprise not loaded');
+        return;
+    }
+    window.enterpriseApp = new SmartCodeEnterprise();
+    window.switchAuthTab = function(tab) {
+        var loginTab = document.getElementById('login-tab');
+        var registerTab = document.getElementById('register-tab');
+        if (tab === 'register') {
+            loginTab.classList.remove('active');
+            registerTab.classList.add('active');
+        } else {
+            registerTab.classList.remove('active');
+            loginTab.classList.add('active');
+        }
+    };
+    window.openModal = function(id) {
+        var modal = document.getElementById(id);
+        if (modal) modal.style.display = 'flex';
+    };
+    window.closeModal = function(id) {
+        var modal = document.getElementById(id);
+        if (modal) modal.style.display = 'none';
+    };
+    window.onclick = function(event) {
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = 'none';
+        }
+    };
+})();
+</script>
+</body>
+</html>

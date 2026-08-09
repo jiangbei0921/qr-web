@@ -1,0 +1,341 @@
+/* ============================================
+   SmartCode 场景中心样式
+   ============================================ */
+
+:root,
+[data-theme="light"] {
+    --scene-primary: var(--ds-accent-light);
+    --scene-primary-light: #7C3AED;
+    --scene-gradient: linear-gradient(135deg, var(--ds-accent-light) 0%, #7C3AED 50%, #A855F7 100%);
+    --scene-bg: var(--ds-bg-light);
+    --scene-text: var(--ds-text-primary-light);
+    --scene-text-secondary: var(--ds-text-secondary-light);
+    --scene-border: var(--ds-border-light);
+    --scene-radius: var(--ds-radius);
+    --scene-radius-full: 999px;
+    --scene-transition: var(--ds-transition);
+}
+
+[data-theme="dark"] {
+    --scene-primary: var(--ds-accent);
+    --scene-primary-light: #8B5CF6;
+    --scene-gradient: linear-gradient(135deg, var(--ds-accent) 0%, #8B5CF6 50%, #A855F7 100%);
+    --scene-bg: var(--ds-bg);
+    --scene-text: var(--ds-text-primary);
+    --scene-text-secondary: var(--ds-text-secondary);
+    --scene-border: var(--ds-border);
+    --scene-radius: var(--ds-radius);
+    --scene-radius-full: 999px;
+    --scene-transition: var(--ds-transition);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    font-family: 'Inter', 'PingFang SC', -apple-system, sans-serif;
+    background: var(--scene-bg);
+    color: var(--scene-text);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+/* ============ 顶部导航栏 ============ */
+.scene-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--ds-space-section);
+    background: var(--ds-glass-bg-light);
+    backdrop-filter: blur(var(--ds-glass-blur));
+    -webkit-backdrop-filter: blur(var(--ds-glass-blur));
+    border-bottom: 1px solid var(--ds-glass-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--ds-space-xl);
+    z-index: 1000;
+}
+
+.scene-nav-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.scene-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+}
+
+.scene-logo svg {
+    width: 36px;
+    height: 36px;
+}
+
+.scene-brand {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--scene-text);
+    letter-spacing: 1px;
+}
+
+.scene-nav-center {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+.scene-nav-link {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--scene-text-secondary);
+    text-decoration: none;
+    transition: color var(--scene-transition);
+    position: relative;
+}
+
+.scene-nav-link:hover,
+.scene-nav-link.active {
+    color: var(--scene-primary);
+}
+
+.scene-nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 3px;
+    background: var(--scene-gradient);
+    border-radius: var(--scene-radius-full);
+}
+
+.scene-nav-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.scene-lang-switch {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--scene-text-secondary);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: var(--scene-radius);
+    transition: all var(--scene-transition);
+    font-family: inherit;
+}
+
+.scene-lang-switch:hover {
+    background: #F1F5F9;
+    color: var(--scene-text);
+}
+
+.scene-btn-login {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--scene-text);
+    background: transparent;
+    border: 1px solid var(--scene-border);
+    border-radius: var(--scene-radius);
+    padding: 8px 20px;
+    cursor: pointer;
+    transition: all var(--scene-transition);
+    font-family: inherit;
+}
+
+.scene-btn-login:hover {
+    border-color: var(--scene-primary);
+    color: var(--scene-primary);
+    transform: translateY(-2px);
+}
+
+.scene-btn-create {
+    font-size: 14px;
+    font-weight: 600;
+    color: #FFFFFF;
+    background: var(--scene-gradient);
+    border: none;
+    border-radius: var(--scene-radius-full);
+    padding: 10px 24px;
+    cursor: pointer;
+    transition: all var(--scene-transition);
+    font-family: inherit;
+    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+}
+
+.scene-btn-create:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4);
+}
+
+/* ============ 页面头部 ============ */
+.scene-header {
+    height: 240px;
+    background: var(--scene-gradient);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 64px;
+    text-align: center;
+    padding: 0 24px;
+}
+
+.scene-header-title {
+    font-size: 40px;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin-bottom: 12px;
+}
+
+.scene-header-subtitle {
+    font-size: 16px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* ============ 分类标签栏 ============ */
+.scene-tabs {
+    padding: 0 40px;
+    background: #FFFFFF;
+    border-bottom: 1px solid var(--scene-border);
+    position: sticky;
+    top: 64px;
+    z-index: 100;
+}
+
+.scene-tabs-scroll {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 16px 0;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+.scene-tabs-scroll::-webkit-scrollbar {
+    height: 0;
+}
+
+.scene-tab {
+    flex-shrink: 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--scene-text-secondary);
+    background: #F1F5F9;
+    border: none;
+    border-radius: var(--scene-radius-full);
+    padding: 8px 20px;
+    cursor: pointer;
+    transition: all var(--scene-transition);
+    font-family: inherit;
+    white-space: nowrap;
+}
+
+.scene-tab:hover {
+    background: #E2E8F0;
+    color: var(--scene-text);
+}
+
+.scene-tab.active {
+    background: var(--scene-gradient);
+    color: #FFFFFF;
+}
+
+/* ============ 场景卡片区域 ============ */
+.scene-cards {
+    padding: 40px 40px 80px;
+}
+
+.scene-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+@media (max-width: 767px) {
+    .scene-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.scene-card {
+    background: #FFFFFF;
+    border-radius: var(--scene-radius);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    transition: all var(--scene-transition);
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+    color: inherit;
+}
+
+.scene-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+}
+
+.scene-card-cover {
+    height: 100px;
+}
+
+.scene-card-body {
+    padding: 16px;
+}
+
+.scene-card-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--scene-text);
+    margin-bottom: 4px;
+}
+
+.scene-card-desc {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--scene-text-secondary);
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.scene-card-users {
+    font-size: 12px;
+    font-weight: 400;
+    color: #94A3B8;
+    margin-bottom: 12px;
+}
+
+.scene-card-btn {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 500;
+    color: #FFFFFF;
+    background: var(--scene-gradient);
+    border: none;
+    border-radius: var(--scene-radius-full);
+    padding: 8px 20px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all var(--scene-transition);
+    text-decoration: none;
+}
+
+.scene-card-btn:hover {
+    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+}

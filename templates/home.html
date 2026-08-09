@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartCode - 智能二维码管理平台</title>
+    <link rel="stylesheet" href="/static/design-system.css">
+    <link rel="stylesheet" href="/static/home.css">
+</head>
+<body>
+
+    <!-- 顶部导航栏 -->
+    <header class="home-nav">
+        <div class="home-nav-left">
+            <div class="home-logo">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36">
+                    <polygon points="18,1 35,18 18,35 1,18" fill="none" stroke="#4F46E5" stroke-width="2.5" stroke-linejoin="miter"/>
+                    <polygon points="18,4 32,18 18,32 4,18" fill="none" stroke="#7C3AED" stroke-width="1" stroke-linejoin="miter"/>
+                    <polygon points="18,1 24,10 12,10" fill="#4F46E5"/>
+                    <rect x="11" y="14" width="14" height="3" rx="1.5" fill="#4F46E5"/>
+                    <rect x="11" y="19" width="14" height="3" rx="1.5" fill="#7C3AED"/>
+                    <rect x="11" y="24" width="10" height="3" rx="1.5" fill="#4F46E5"/>
+                </svg>
+            </div>
+            <span class="home-brand">SmartCode</span>
+        </div>
+
+        <nav class="home-nav-center">
+            <a href="/" class="home-nav-link active">首页</a>
+            <a href="/scene" class="home-nav-link">场景</a>
+            <a href="/templates-center" class="home-nav-link">模板</a>
+            <a href="#" class="home-nav-link">发现</a>
+        </nav>
+
+        <div class="home-nav-right">
+            <button class="home-lang-switch">中文</button>
+            <button class="home-btn-login">登录</button>
+            <button class="home-btn-create">开始创建</button>
+        </div>
+    </header>
+
+    <!-- Hero Banner -->
+    <section class="home-hero">
+        <div class="home-hero-deco-circle-1"></div>
+        <div class="home-hero-deco-circle-2"></div>
+        <div class="home-hero-deco-circle-3"></div>
+        <div class="home-hero-deco-circle-4"></div>
+        <div class="home-hero-deco-line-1"></div>
+        <div class="home-hero-deco-line-2"></div>
+        <div class="home-hero-deco-dot-1"></div>
+        <div class="home-hero-deco-dot-2"></div>
+        <div class="home-hero-deco-dot-3"></div>
+
+        <div class="home-hero-content">
+            <h1 class="home-hero-title">今天，你想分享什么？</h1>
+            <p class="home-hero-subtitle">一个二维码，连接你的所有数字内容。</p>
+            <div class="home-hero-actions">
+                <button class="home-hero-btn-primary">开始创建</button>
+                <button class="home-hero-btn-secondary">浏览模板</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 热门场景 -->
+    <section class="home-scenes">
+        <h2 class="home-scenes-title">热门场景</h2>
+        <p class="home-scenes-subtitle">选择你的使用场景，快速开始创建。</p>
+        <div class="home-scenes-scroll">
+            <div class="home-scene-card">
+                <div class="home-scene-icon" style="background: #EEF2FF;">
+                    <span>🏠</span>
+                </div>
+                <div class="home-scene-name">个人主页</div>
+                <div class="home-scene-desc">展示你的个人品牌</div>
+                <a href="#" class="home-scene-link">立即创建</a>
+            </div>
+            <div class="home-scene-card">
+                <div class="home-scene-icon" style="background: #FEF3C7;">
+                    <span>📄</span>
+                </div>
+                <div class="home-scene-name">求职简历</div>
+                <div class="home-scene-desc">让招聘者快速了解你</div>
+                <a href="#" class="home-scene-link">立即创建</a>
+            </div>
+            <div class="home-scene-card">
+                <div class="home-scene-icon" style="background: #DCFCE7;">
+                    <span>📚</span>
+                </div>
+                <div class="home-scene-name">学习资料</div>
+                <div class="home-scene-desc">一码分享所有课程内容</div>
+                <a href="#" class="home-scene-link">立即创建</a>
+            </div>
+            <div class="home-scene-card">
+                <div class="home-scene-icon" style="background: #FCE7F3;">
+                    <span>🛍️</span>
+                </div>
+                <div class="home-scene-name">商品展示</div>
+                <div class="home-scene-desc">扫码即可查看商品详情</div>
+                <a href="#" class="home-scene-link">立即创建</a>
+            </div>
+            <div class="home-scene-card">
+                <div class="home-scene-icon" style="background: #FFF7ED;">
+                    <span>🍽️</span>
+                </div>
+                <div class="home-scene-name">餐厅菜单</div>
+                <div class="home-scene-desc">无接触点餐新体验</div>
+                <a href="#" class="home-scene-link">立即创建</a>
+            </div>
+            <div class="home-scene-card">
+                <div class="home-scene-icon" style="background: #F0FDF4;">
+                    <span>📝</span>
+                </div>
+                <div class="home-scene-name">活动报名</div>
+                <div class="home-scene-desc">扫码即可完成报名</div>
+                <a href="#" class="home-scene-link">立即创建</a>
+            </div>
+            <div class="home-scene-card">
+                <div class="home-scene-icon" style="background: #FDF2F8;">
+                    <span>💒</span>
+                </div>
+                <div class="home-scene-name">婚礼邀请</div>
+                <div class="home-scene-desc">专属婚礼数字邀请函</div>
+                <a href="#" class="home-scene-link">立即创建</a>
+            </div>
+            <div class="home-scene-card">
+                <div class="home-scene-icon" style="background: #F5F3FF;">
+                    <span>📷</span>
+                </div>
+                <div class="home-scene-name">摄影作品</div>
+                <div class="home-scene-desc">展示你的摄影作品集</div>
+                <a href="#" class="home-scene-link">立即创建</a>
+            </div>
+            <div class="home-scene-card">
+                <div class="home-scene-icon" style="background: #F0F9FF;">
+                    <span>🏡</span>
+                </div>
+                <div class="home-scene-name">房屋出租</div>
+                <div class="home-scene-desc">扫码查看房源详情</div>
+                <a href="#" class="home-scene-link">立即创建</a>
+            </div>
+            <div class="home-scene-card">
+                <div class="home-scene-icon" style="background: #FFF1F2;">
+                    <span>🐾</span>
+                </div>
+                <div class="home-scene-name">宠物档案</div>
+                <div class="home-scene-desc">扫码了解宠物信息</div>
+                <a href="#" class="home-scene-link">立即创建</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 热门模板 -->
+    <section class="home-templates">
+        <div class="home-templates-header">
+            <div>
+                <h2 class="home-templates-title">热门模板</h2>
+                <p class="home-templates-subtitle">官方精选，开箱即用。</p>
+            </div>
+            <a href="/templates-center" class="home-templates-all">查看全部模板</a>
+        </div>
+        <div class="home-templates-grid">
+            <div class="home-template-card">
+                <div class="home-template-cover" style="background: linear-gradient(135deg, #F472B6, #FB7185);"></div>
+                <div class="home-template-body">
+                    <div class="home-template-name">婚礼邀请函</div>
+                    <div class="home-template-meta">
+                        <span class="home-template-tag" style="background: #FDF2F8; color: #BE185D;">活动</span>
+                        <span class="home-template-usage">使用 12,300 次</span>
+                    </div>
+                    <div class="home-template-actions">
+                        <button class="home-template-btn-secondary">预览</button>
+                        <button class="home-template-btn-primary">使用</button>
+                    </div>
+                </div>
+            </div>
+            <div class="home-template-card">
+                <div class="home-template-cover" style="background: linear-gradient(135deg, #60A5FA, #818CF8);"></div>
+                <div class="home-template-body">
+                    <div class="home-template-name">个人简历</div>
+                    <div class="home-template-meta">
+                        <span class="home-template-tag" style="background: #EFF6FF; color: #1D4ED8;">求职</span>
+                        <span class="home-template-usage">使用 8,900 次</span>
+                    </div>
+                    <div class="home-template-actions">
+                        <button class="home-template-btn-secondary">预览</button>
+                        <button class="home-template-btn-primary">使用</button>
+                    </div>
+                </div>
+            </div>
+            <div class="home-template-card">
+                <div class="home-template-cover" style="background: linear-gradient(135deg, #FBBF24, #F59E0B);"></div>
+                <div class="home-template-body">
+                    <div class="home-template-name">餐厅菜单</div>
+                    <div class="home-template-meta">
+                        <span class="home-template-tag" style="background: #FFF7ED; color: #C2410C;">餐饮</span>
+                        <span class="home-template-usage">使用 7,200 次</span>
+                    </div>
+                    <div class="home-template-actions">
+                        <button class="home-template-btn-secondary">预览</button>
+                        <button class="home-template-btn-primary">使用</button>
+                    </div>
+                </div>
+            </div>
+            <div class="home-template-card">
+                <div class="home-template-cover" style="background: linear-gradient(135deg, #34D399, #2DD4BF);"></div>
+                <div class="home-template-body">
+                    <div class="home-template-name">商品详情</div>
+                    <div class="home-template-meta">
+                        <span class="home-template-tag" style="background: #ECFDF5; color: #047857;">商业</span>
+                        <span class="home-template-usage">使用 6,800 次</span>
+                    </div>
+                    <div class="home-template-actions">
+                        <button class="home-template-btn-secondary">预览</button>
+                        <button class="home-template-btn-primary">使用</button>
+                    </div>
+                </div>
+            </div>
+            <div class="home-template-card">
+                <div class="home-template-cover" style="background: linear-gradient(135deg, #A78BFA, #C084FC);"></div>
+                <div class="home-template-body">
+                    <div class="home-template-name">课程资料</div>
+                    <div class="home-template-meta">
+                        <span class="home-template-tag" style="background: #F5F3FF; color: #6D28D9;">教育</span>
+                        <span class="home-template-usage">使用 5,400 次</span>
+                    </div>
+                    <div class="home-template-actions">
+                        <button class="home-template-btn-secondary">预览</button>
+                        <button class="home-template-btn-primary">使用</button>
+                    </div>
+                </div>
+            </div>
+            <div class="home-template-card">
+                <div class="home-template-cover" style="background: linear-gradient(135deg, #94A3B8, #64748B);"></div>
+                <div class="home-template-body">
+                    <div class="home-template-name">设备档案</div>
+                    <div class="home-template-meta">
+                        <span class="home-template-tag" style="background: #F1F5F9; color: #334155;">企业</span>
+                        <span class="home-template-usage">使用 4,100 次</span>
+                    </div>
+                    <div class="home-template-actions">
+                        <button class="home-template-btn-secondary">预览</button>
+                        <button class="home-template-btn-primary">使用</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 产品优势 -->
+    <section class="home-advantages">
+        <h2 class="home-advantages-title">为什么选择 SmartCode？</h2>
+        <div class="home-advantages-grid">
+            <div class="home-advantage-item">
+                <div class="home-advantage-icon" style="background: #EEF2FF;">
+                    <span>🔗</span>
+                </div>
+                <div class="home-advantage-name">静态二维码</div>
+                <div class="home-advantage-desc">永久有效，随时使用</div>
+            </div>
+            <div class="home-advantage-item">
+                <div class="home-advantage-icon" style="background: #F5F3FF;">
+                    <span>🔄</span>
+                </div>
+                <div class="home-advantage-name">动态活码</div>
+                <div class="home-advantage-desc">内容可随时修改</div>
+            </div>
+            <div class="home-advantage-item">
+                <div class="home-advantage-icon" style="background: #EFF6FF;">
+                    <span>📦</span>
+                </div>
+                <div class="home-advantage-name">批量生成</div>
+                <div class="home-advantage-desc">一次生成千张二维码</div>
+            </div>
+            <div class="home-advantage-item">
+                <div class="home-advantage-icon" style="background: #FDF2F8;">
+                    <span>🎨</span>
+                </div>
+                <div class="home-advantage-name">二维码美化</div>
+                <div class="home-advantage-desc">个性化外观定制</div>
+            </div>
+            <div class="home-advantage-item">
+                <div class="home-advantage-icon" style="background: #F0FDF4;">
+                    <span>📊</span>
+                </div>
+                <div class="home-advantage-name">扫码统计</div>
+                <div class="home-advantage-desc">实时数据分析</div>
+            </div>
+            <div class="home-advantage-item">
+                <div class="home-advantage-icon" style="background: #FEF3C7;">
+                    <span>📝</span>
+                </div>
+                <div class="home-advantage-name">表单收集</div>
+                <div class="home-advantage-desc">扫码即可填写表单</div>
+            </div>
+            <div class="home-advantage-item">
+                <div class="home-advantage-icon" style="background: #FFF7ED;">
+                    <span>👥</span>
+                </div>
+                <div class="home-advantage-name">企业协作</div>
+                <div class="home-advantage-desc">团队共同管理</div>
+            </div>
+            <div class="home-advantage-item">
+                <div class="home-advantage-icon" style="background: #F0F9FF;">
+                    <span>🗂️</span>
+                </div>
+                <div class="home-advantage-name">内容合集</div>
+                <div class="home-advantage-desc">一码连接所有内容</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 精选案例 -->
+    <section class="home-cases">
+        <h2 class="home-cases-title">精选案例</h2>
+        <div class="home-cases-grid">
+            <div class="home-case-card">
+                <div class="home-case-cover" style="background: linear-gradient(135deg, #6366F1, #8B5CF6);"></div>
+                <div class="home-case-body">
+                    <div class="home-case-name">毕业作品集</div>
+                    <div class="home-case-desc">用一页展示你的四年成果</div>
+                    <button class="home-case-btn">查看详情</button>
+                </div>
+            </div>
+            <div class="home-case-card">
+                <div class="home-case-cover" style="background: linear-gradient(135deg, #EC4899, #F472B6);"></div>
+                <div class="home-case-body">
+                    <div class="home-case-name">婚礼邀请函</div>
+                    <div class="home-case-desc">浪漫的数字婚礼请柬</div>
+                    <button class="home-case-btn">查看详情</button>
+                </div>
+            </div>
+            <div class="home-case-card">
+                <div class="home-case-cover" style="background: linear-gradient(135deg, #F59E0B, #FBBF24);"></div>
+                <div class="home-case-body">
+                    <div class="home-case-name">餐厅电子菜单</div>
+                    <div class="home-case-desc">扫码点餐，安全便捷</div>
+                    <button class="home-case-btn">查看详情</button>
+                </div>
+            </div>
+            <div class="home-case-card">
+                <div class="home-case-cover" style="background: linear-gradient(135deg, #10B981, #34D399);"></div>
+                <div class="home-case-body">
+                    <div class="home-case-name">设备资产管理</div>
+                    <div class="home-case-desc">一物一码，高效管理</div>
+                    <button class="home-case-btn">查看详情</button>
+                </div>
+            </div>
+            <div class="home-case-card">
+                <div class="home-case-cover" style="background: linear-gradient(135deg, #3B82F6, #60A5FA);"></div>
+                <div class="home-case-body">
+                    <div class="home-case-name">摄影作品展示</div>
+                    <div class="home-case-desc">让作品被更多人看见</div>
+                    <button class="home-case-btn">查看详情</button>
+                </div>
+            </div>
+            <div class="home-case-card">
+                <div class="home-case-cover" style="background: linear-gradient(135deg, #8B5CF6, #A78BFA);"></div>
+                <div class="home-case-body">
+                    <div class="home-case-name">商品销售页面</div>
+                    <div class="home-case-desc">扫码直达商品详情</div>
+                    <button class="home-case-btn">查看详情</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="home-footer">
+        <div class="home-footer-main">
+            <div class="home-footer-col">
+                <div class="home-footer-logo">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" width="28" height="28">
+                        <polygon points="18,1 35,18 18,35 1,18" fill="none" stroke="#A78BFA" stroke-width="2.5" stroke-linejoin="miter"/>
+                        <polygon points="18,4 32,18 18,32 4,18" fill="none" stroke="#7C3AED" stroke-width="1" stroke-linejoin="miter"/>
+                        <polygon points="18,1 24,10 12,10" fill="#A78BFA"/>
+                        <rect x="11" y="14" width="14" height="3" rx="1.5" fill="#A78BFA"/>
+                        <rect x="11" y="19" width="14" height="3" rx="1.5" fill="#7C3AED"/>
+                        <rect x="11" y="24" width="10" height="3" rx="1.5" fill="#A78BFA"/>
+                    </svg>
+                    <span>SmartCode</span>
+                </div>
+                <p class="home-footer-desc">一个二维码，连接你的所有数字内容。</p>
+            </div>
+            <div class="home-footer-col">
+                <h4 class="home-footer-col-title">产品</h4>
+                <a href="#" class="home-footer-link">首页</a>
+                <a href="#" class="home-footer-link">场景</a>
+                <a href="#" class="home-footer-link">模板</a>
+                <a href="#" class="home-footer-link">定价</a>
+            </div>
+            <div class="home-footer-col">
+                <h4 class="home-footer-col-title">支持</h4>
+                <a href="#" class="home-footer-link">帮助中心</a>
+                <a href="#" class="home-footer-link">开发文档</a>
+                <a href="#" class="home-footer-link">联系我们</a>
+            </div>
+            <div class="home-footer-col">
+                <h4 class="home-footer-col-title">法律</h4>
+                <a href="#" class="home-footer-link">隐私政策</a>
+                <a href="#" class="home-footer-link">服务协议</a>
+                <a href="#" class="home-footer-link">更新日志</a>
+            </div>
+        </div>
+        <div class="home-footer-bottom">
+            <span class="home-footer-copyright">&copy; 2026 SmartCode. All rights reserved.</span>
+            <select class="home-footer-lang">
+                <option value="zh">中文</option>
+                <option value="en">English</option>
+                <option value="ja">日本語</option>
+                <option value="ko">한국어</option>
+            </select>
+        </div>
+    </footer>
+
+    <!-- 登录/注册弹窗 -->
+    <div id="home-auth-overlay" class="home-auth-overlay" style="display: none;">
+        <div class="home-auth-modal">
+            <button class="home-auth-close" id="home-auth-close">&times;</button>
+            <!-- 登录表单 -->
+            <div id="home-login-panel">
+                <h2 class="home-auth-title">登录 SmartCode</h2>
+                <p class="home-auth-subtitle">欢迎回来，继续你的创作之旅</p>
+                <form id="home-login-form">
+                    <div class="home-auth-field">
+                        <label>邮箱或用户名</label>
+                        <input type="text" id="home-login-account" placeholder="请输入邮箱或用户名" required>
+                    </div>
+                    <div class="home-auth-field">
+                        <label>密码</label>
+                        <input type="password" id="home-login-password" placeholder="请输入密码" required>
+                    </div>
+                    <div class="home-auth-error" id="home-login-error" style="display: none;"></div>
+                    <button type="submit" class="home-auth-submit">登录</button>
+                </form>
+                <p class="home-auth-switch">
+                    还没有账户？<a href="#" id="home-switch-register">立即注册</a>
+                </p>
+            </div>
+            <!-- 注册表单 -->
+            <div id="home-register-panel" style="display: none;">
+                <h2 class="home-auth-title">创建账户</h2>
+                <p class="home-auth-subtitle">开始你的二维码创作之旅</p>
+                <form id="home-register-form">
+                    <div class="home-auth-field">
+                        <label>用户名</label>
+                        <input type="text" id="home-register-username" placeholder="请输入用户名" required>
+                    </div>
+                    <div class="home-auth-field">
+                        <label>邮箱</label>
+                        <input type="email" id="home-register-email" placeholder="请输入邮箱" required>
+                    </div>
+                    <div class="home-auth-field">
+                        <label>密码</label>
+                        <input type="password" id="home-register-password" placeholder="请输入密码（至少8位）" required minlength="8">
+                    </div>
+                    <div class="home-auth-field">
+                        <label>确认密码</label>
+                        <input type="password" id="home-register-confirm" placeholder="请再次输入密码" required>
+                    </div>
+                    <div class="home-auth-error" id="home-register-error" style="display: none;"></div>
+                    <button type="submit" class="home-auth-submit">注册</button>
+                </form>
+                <p class="home-auth-switch">
+                    已有账户？<a href="#" id="home-switch-login">立即登录</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        var overlay = document.getElementById('home-auth-overlay');
+        var closeBtn = document.getElementById('home-auth-close');
+        var loginPanel = document.getElementById('home-login-panel');
+        var registerPanel = document.getElementById('home-register-panel');
+        var loginError = document.getElementById('home-login-error');
+        var registerError = document.getElementById('home-register-error');
+
+        function showOverlay() {
+            overlay.style.display = 'flex';
+        }
+
+        function hideOverlay() {
+            overlay.style.display = 'none';
+            loginError.style.display = 'none';
+            registerError.style.display = 'none';
+        }
+
+        function showLogin() {
+            loginPanel.style.display = 'block';
+            registerPanel.style.display = 'none';
+            loginError.style.display = 'none';
+        }
+
+        function showRegister() {
+            loginPanel.style.display = 'none';
+            registerPanel.style.display = 'block';
+            registerError.style.display = 'none';
+        }
+
+        function showError(el, msg) {
+            el.textContent = msg;
+            el.style.display = 'block';
+        }
+
+        closeBtn.addEventListener('click', hideOverlay);
+        overlay.addEventListener('click', function(e) {
+            if (e.target === overlay) hideOverlay();
+        });
+        document.getElementById('home-switch-register').addEventListener('click', function(e) {
+            e.preventDefault();
+            showRegister();
+        });
+        document.getElementById('home-switch-login').addEventListener('click', function(e) {
+            e.preventDefault();
+            showLogin();
+        });
+
+        // 登录表单提交
+        document.getElementById('home-login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            var account = document.getElementById('home-login-account').value.trim();
+            var password = document.getElementById('home-login-password').value;
+            if (!account || !password) {
+                showError(loginError, '请填写所有字段');
+                return;
+            }
+            try {
+                var resp = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: account, username: account, password: password })
+                });
+                var data = await resp.json();
+                if (data.success) {
+                    window.location.href = '/app';
+                } else {
+                    showError(loginError, data.error || '登录失败');
+                }
+            } catch (err) {
+                showError(loginError, '网络错误，请稍后重试');
+            }
+        });
+
+        // 注册表单提交
+        document.getElementById('home-register-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            var username = document.getElementById('home-register-username').value.trim();
+            var email = document.getElementById('home-register-email').value.trim();
+            var password = document.getElementById('home-register-password').value;
+            var confirm = document.getElementById('home-register-confirm').value;
+            if (!username || !email || !password || !confirm) {
+                showError(registerError, '请填写所有字段');
+                return;
+            }
+            if (password.length < 8) {
+                showError(registerError, '密码至少需要8个字符');
+                return;
+            }
+            if (password !== confirm) {
+                showError(registerError, '两次输入的密码不一致');
+                return;
+            }
+            try {
+                var resp = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: username, email: email, password: password, org_name: username + '的工作区' })
+                });
+                var data = await resp.json();
+                if (data.success) {
+                    window.location.href = '/app';
+                } else {
+                    showError(registerError, data.error || '注册失败');
+                }
+            } catch (err) {
+                showError(registerError, '网络错误，请稍后重试');
+            }
+        });
+
+        // 导航栏「登录」按钮
+        var loginBtns = document.querySelectorAll('.home-btn-login');
+        loginBtns.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                showLogin();
+                showOverlay();
+            });
+        });
+
+        // 所有「开始创建」按钮 - 检查登录状态，未登录则弹窗
+        var createBtns = document.querySelectorAll('.home-btn-create, .home-hero-btn-primary');
+        createBtns.forEach(function(btn) {
+            btn.addEventListener('click', async function() {
+                try {
+                    var resp = await fetch('/api/auth/check');
+                    var data = await resp.json();
+                    if (data.authenticated) {
+                        window.location.href = '/app';
+                    } else {
+                        showLogin();
+                        showOverlay();
+                    }
+                } catch (err) {
+                    showLogin();
+                    showOverlay();
+                }
+            });
+        });
+
+        // 「浏览模板」按钮
+        var templateBtns = document.querySelectorAll('.home-hero-btn-secondary');
+        templateBtns.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                window.location.href = '/templates-center';
+            });
+        });
+
+        // 检查URL参数，自动显示登录/注册弹窗
+        if (window.location.search.indexOf('show=login') !== -1) {
+            showLogin();
+            showOverlay();
+        }
+    })();
+    </script>
+
+</body>
+</html>

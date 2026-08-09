@@ -1,0 +1,585 @@
+/* ============================================
+   SmartCode 我的空间样式
+   ============================================ */
+
+:root,
+[data-theme="light"] {
+    --ms-primary: var(--ds-accent-light);
+    --ms-primary-light: #7C3AED;
+    --ms-gradient: linear-gradient(135deg, var(--ds-accent-light) 0%, #7C3AED 50%, #A855F7 100%);
+    --ms-bg: var(--ds-bg-secondary-light);
+    --ms-surface: var(--ds-surface-light);
+    --ms-text: var(--ds-text-primary-light);
+    --ms-text-secondary: var(--ds-text-secondary-light);
+    --ms-text-muted: var(--ds-text-muted-light);
+    --ms-border: var(--ds-border-light);
+    --ms-radius: var(--ds-radius);
+    --ms-radius-sm: var(--ds-radius-sm);
+    --ms-radius-full: 999px;
+    --ms-transition: var(--ds-transition);
+}
+
+[data-theme="dark"] {
+    --ms-primary: var(--ds-accent);
+    --ms-primary-light: #8B5CF6;
+    --ms-gradient: linear-gradient(135deg, var(--ds-accent) 0%, #8B5CF6 50%, #A855F7 100%);
+    --ms-bg: var(--ds-bg);
+    --ms-surface: var(--ds-surface);
+    --ms-text: var(--ds-text-primary);
+    --ms-text-secondary: var(--ds-text-secondary);
+    --ms-text-muted: var(--ds-text-muted);
+    --ms-border: var(--ds-border);
+    --ms-radius: var(--ds-radius);
+    --ms-radius-sm: var(--ds-radius-sm);
+    --ms-radius-full: 999px;
+    --ms-transition: var(--ds-transition);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    font-family: 'Inter', 'PingFang SC', -apple-system, sans-serif;
+    background: var(--ms-bg);
+    color: var(--ms-text);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ============ 整体布局 ============ */
+.ms-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* ============ 顶部导航栏 ============ */
+.top-navigation {
+    position: sticky;
+    top: 0;
+    height: var(--ds-space-section);
+    background: var(--ds-glass-bg-light);
+    backdrop-filter: blur(var(--ds-glass-blur));
+    -webkit-backdrop-filter: blur(var(--ds-glass-blur));
+    border-bottom: 1px solid var(--ds-glass-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--ds-space-xl);
+    z-index: 100;
+    gap: 16px;
+}
+
+.top-nav-left {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-shrink: 0;
+}
+
+.top-nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+.top-nav-logo svg {
+    width: 32px;
+    height: 32px;
+}
+
+.top-nav-brand {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ms-primary);
+    letter-spacing: 1px;
+}
+
+.top-nav-center {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+    justify-content: center;
+}
+
+.top-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--ms-text-secondary);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    background: none;
+    font-family: inherit;
+    white-space: nowrap;
+}
+
+.top-nav-item:hover {
+    color: var(--ms-text);
+    background: rgba(79, 70, 229, 0.06);
+}
+
+.top-nav-item.active {
+    color: var(--ms-primary);
+    background: rgba(79, 70, 229, 0.08);
+}
+
+.top-nav-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.top-nav-icon-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: none;
+    background: none;
+    color: var(--ms-text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.top-nav-icon-btn:hover {
+    background: rgba(79, 70, 229, 0.06);
+    color: var(--ms-text);
+}
+
+.top-nav-icon-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+.top-nav-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--ms-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+/* ============ 空间标签栏 ============ */
+.ms-spaces-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--ms-border);
+}
+
+.ms-space-tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: var(--ms-radius-full);
+    border: 1px solid var(--ms-border);
+    background: var(--ms-surface);
+    color: var(--ms-text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--ms-transition);
+    font-family: inherit;
+    white-space: nowrap;
+}
+
+.ms-space-tab:hover {
+    border-color: var(--ms-primary);
+    color: var(--ms-primary);
+    background: rgba(79, 70, 229, 0.04);
+}
+
+.ms-space-tab.active {
+    background: var(--ms-gradient);
+    border-color: transparent;
+    color: #FFFFFF;
+}
+
+.ms-space-tab.active .ms-space-tab-count {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.ms-space-tab-icon {
+    font-size: 14px;
+}
+
+.ms-space-tab-count {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--ms-text-muted);
+    background: rgba(0, 0, 0, 0.05);
+    padding: 1px 8px;
+    border-radius: var(--ms-radius-full);
+}
+
+.ms-space-tab.active .ms-space-tab-count {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.ms-new-space-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 16px;
+    border: 2px dashed var(--ms-border);
+    border-radius: var(--ms-radius-full);
+    background: none;
+    color: var(--ms-text-muted);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--ms-transition);
+    font-family: inherit;
+    white-space: nowrap;
+    margin-left: auto;
+}
+
+.ms-new-space-btn:hover {
+    border-color: var(--ms-primary);
+    color: var(--ms-primary);
+    background: rgba(79, 70, 229, 0.04);
+}
+
+/* ============ 右侧内容区 ============ */
+.ms-content {
+    flex: 1;
+    width: 100%;
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 48px 24px;
+}
+
+/* 内容区顶部 */
+.ms-content-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.ms-content-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--ms-text);
+}
+
+.ms-content-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ms-search-box {
+    display: flex;
+    align-items: center;
+    width: 220px;
+    height: 36px;
+    background: var(--ms-surface);
+    border: 1px solid var(--ms-border);
+    border-radius: var(--ms-radius-full);
+    padding: 0 12px;
+    gap: 8px;
+    transition: border-color var(--ms-transition);
+}
+
+.ms-search-box:focus-within {
+    border-color: var(--ms-primary);
+}
+
+.ms-search-box input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--ms-text);
+    background: transparent;
+}
+
+.ms-search-box input::placeholder {
+    color: var(--ms-text-muted);
+}
+
+.ms-search-box svg {
+    flex-shrink: 0;
+    color: var(--ms-text-muted);
+}
+
+.ms-view-toggle {
+    display: flex;
+    background: #F1F5F9;
+    border-radius: 8px;
+    padding: 2px;
+}
+
+.ms-view-btn {
+    width: 32px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--ms-text-muted);
+    transition: all var(--ms-transition);
+}
+
+.ms-view-btn.active {
+    background: var(--ms-surface);
+    color: var(--ms-primary);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.ms-btn-new {
+    font-size: 13px;
+    font-weight: 500;
+    color: #FFFFFF;
+    background: var(--ms-gradient);
+    border: none;
+    border-radius: var(--ms-radius-full);
+    padding: 8px 18px;
+    cursor: pointer;
+    transition: all var(--ms-transition);
+    font-family: inherit;
+}
+
+.ms-btn-new:hover {
+    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+}
+
+/* ============ 数据统计卡片 ============ */
+.ms-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.ms-stat-card {
+    background: var(--ms-surface);
+    border-radius: var(--ms-radius-sm);
+    padding: 18px 20px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
+}
+
+.ms-stat-number {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--ms-primary);
+    margin-bottom: 4px;
+}
+
+.ms-stat-label {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--ms-text-muted);
+}
+
+/* ============ 内容标签筛选 ============ */
+.ms-filter {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.ms-filter-tab {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ms-text-secondary);
+    background: #F1F5F9;
+    border: none;
+    border-radius: var(--ms-radius-full);
+    padding: 7px 18px;
+    cursor: pointer;
+    transition: all var(--ms-transition);
+    font-family: inherit;
+    white-space: nowrap;
+}
+
+.ms-filter-tab:hover {
+    background: #E2E8F0;
+    color: var(--ms-text);
+}
+
+.ms-filter-tab.active {
+    background: var(--ms-gradient);
+    color: #FFFFFF;
+}
+
+/* ============ 内容卡片区域 ============ */
+.ms-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.ms-card {
+    background: var(--ms-surface);
+    border-radius: var(--ms-radius-sm);
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+    transition: all var(--ms-transition);
+    position: relative;
+    cursor: pointer;
+}
+
+.ms-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+}
+
+.ms-card:hover .ms-card-actions-overlay {
+    opacity: 1;
+}
+
+.ms-card-cover {
+    height: 120px;
+    position: relative;
+}
+
+.ms-card-body {
+    padding: 14px;
+}
+
+.ms-card-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ms-text);
+    margin-bottom: 6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ms-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.ms-card-type {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ms-primary);
+    background: rgba(79, 70, 229, 0.08);
+    padding: 2px 8px;
+    border-radius: var(--ms-radius-full);
+}
+
+.ms-card-time {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--ms-text-muted);
+}
+
+.ms-card-scans {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--ms-text-muted);
+}
+
+/* 悬浮操作按钮 */
+.ms-card-actions-overlay {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity var(--ms-transition);
+}
+
+.ms-card-action {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--ms-text-secondary);
+    transition: all var(--ms-transition);
+    backdrop-filter: blur(4px);
+}
+
+.ms-card-action:hover {
+    background: #FFFFFF;
+    color: var(--ms-primary);
+}
+
+/* ============ 分页 ============ */
+.ms-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding-bottom: 40px;
+}
+
+.ms-page-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ms-text-secondary);
+    background: #F1F5F9;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all var(--ms-transition);
+    font-family: inherit;
+}
+
+.ms-page-btn:hover {
+    background: #E2E8F0;
+    color: var(--ms-text);
+}
+
+.ms-page-btn.active {
+    background: var(--ms-gradient);
+    color: #FFFFFF;
+    border-radius: var(--ms-radius-full);
+}
+
+.ms-page-btn:disabled {
+    opacity: 0.4;
+    cursor: default;
+    pointer-events: none;
+}

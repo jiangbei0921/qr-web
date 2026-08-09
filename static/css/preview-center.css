@@ -1,0 +1,618 @@
+/* ============================================================
+   智码云 - 二维码多终端预览中心样式
+   SmartCode QR Code Multi-Device Preview Center
+   ============================================================ */
+
+/* ========== CSS 变量 / 主题系统 ========== */
+:root {
+    --pc-bg-primary: #f8f9fa;
+    --pc-bg-secondary: #ffffff;
+    --pc-bg-tertiary: #e9ecef;
+    --pc-text-primary: #212529;
+    --pc-text-secondary: #6c757d;
+    --pc-text-muted: #adb5bd;
+    --pc-border-color: #dee2e6;
+    --pc-border-light: #e9ecef;
+    --pc-accent: #0d6efd;
+    --pc-accent-hover: #0b5ed7;
+    --pc-accent-light: #e7f1ff;
+    --pc-shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+    --pc-shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+    --pc-shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+    --pc-device-shell: #1a1a2e;
+    --pc-device-screen-bg: #ffffff;
+    --pc-device-notch: #0a0a0a;
+    --pc-radius-sm: 6px;
+    --pc-radius-md: 10px;
+    --pc-radius-lg: 16px;
+    --pc-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="dark"] {
+    --pc-bg-primary: #1a1a2e;
+    --pc-bg-secondary: #16213e;
+    --pc-bg-tertiary: #0f3460;
+    --pc-text-primary: #e4e6eb;
+    --pc-text-secondary: #b0b3b8;
+    --pc-text-muted: #6c757d;
+    --pc-border-color: #2d3748;
+    --pc-border-light: #1e293b;
+    --pc-accent: #3b82f6;
+    --pc-accent-hover: #60a5fa;
+    --pc-accent-light: #1e3a5f;
+    --pc-shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+    --pc-shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+    --pc-shadow-lg: 0 8px 24px rgba(0,0,0,0.5);
+    --pc-device-shell: #0d0d1a;
+    --pc-device-screen-bg: #1a1a2e;
+    --pc-device-notch: #000000;
+}
+
+@media (prefers-color-scheme: dark) {
+    [data-theme="auto"] {
+        --pc-bg-primary: #1a1a2e;
+        --pc-bg-secondary: #16213e;
+        --pc-bg-tertiary: #0f3460;
+        --pc-text-primary: #e4e6eb;
+        --pc-text-secondary: #b0b3b8;
+        --pc-text-muted: #6c757d;
+        --pc-border-color: #2d3748;
+        --pc-border-light: #1e293b;
+        --pc-accent: #3b82f6;
+        --pc-accent-hover: #60a5fa;
+        --pc-accent-light: #1e3a5f;
+        --pc-shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+        --pc-shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+        --pc-shadow-lg: 0 8px 24px rgba(0,0,0,0.5);
+        --pc-device-shell: #0d0d1a;
+        --pc-device-screen-bg: #1a1a2e;
+        --pc-device-notch: #000000;
+    }
+}
+
+/* ========== 预览中心容器 ========== */
+.preview-center {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    grid-template-rows: 1fr auto;
+    gap: 0;
+    background: var(--pc-bg-primary);
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* ========== 左侧栏：设备选择器 ========== */
+.preview-center__sidebar {
+    grid-row: 1 / -1;
+    background: var(--pc-bg-secondary);
+    border-right: 1px solid var(--pc-border-color);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.preview-center__sidebar-header {
+    padding: 16px 16px 12px;
+    border-bottom: 1px solid var(--pc-border-light);
+}
+
+.preview-center__sidebar-header h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--pc-text-primary);
+}
+
+.preview-center__device-list {
+    list-style: none;
+    margin: 0;
+    padding: 8px;
+    flex: 1;
+}
+
+.preview-center__device-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    margin-bottom: 4px;
+    border-radius: var(--pc-radius-sm);
+    cursor: pointer;
+    transition: all var(--pc-transition);
+    color: var(--pc-text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid transparent;
+}
+
+.preview-center__device-item:hover {
+    background: var(--pc-accent-light);
+    color: var(--pc-accent);
+}
+
+.preview-center__device-item--active {
+    background: var(--pc-accent-light);
+    color: var(--pc-accent);
+    border-color: var(--pc-accent);
+}
+
+.preview-center__device-item-icon {
+    font-size: 20px;
+    width: 28px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.preview-center__device-item-name {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.preview-center__device-item-category {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    background: var(--pc-bg-tertiary);
+    color: var(--pc-text-muted);
+    text-transform: uppercase;
+}
+
+.preview-center__sidebar-footer {
+    padding: 12px 16px;
+    border-top: 1px solid var(--pc-border-light);
+}
+
+.preview-center__hint {
+    margin: 0;
+    font-size: 11px;
+    color: var(--pc-text-muted);
+    text-align: center;
+}
+
+/* ========== 中央：预览视口 ========== */
+.preview-center__viewport {
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: var(--pc-bg-primary);
+    overflow: auto;
+    position: relative;
+}
+
+.preview-center__viewport::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(128,128,128,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(128,128,128,0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+}
+
+/* ========== 设备外壳 ========== */
+.preview-center__device-shell {
+    position: relative;
+    background: var(--pc-device-shell);
+    border-radius: 36px;
+    box-shadow:
+        0 0 0 2px #2a2a3e,
+        0 0 0 4px #1a1a2e,
+        0 0 0 6px #2a2a3e,
+        0 8px 32px rgba(0,0,0,0.3);
+    transition: all var(--pc-transition);
+    flex-shrink: 0;
+}
+
+.preview-center__device-shell--desktop {
+    border-radius: 12px;
+    background: #e0e0e0;
+    box-shadow:
+        0 0 0 3px #d0d0d0,
+        0 0 0 6px #c0c0c0,
+        0 8px 32px rgba(0,0,0,0.15);
+}
+
+.preview-center__device-shell--tablet {
+    border-radius: 24px;
+}
+
+/* 设备屏幕 */
+.preview-center__device-screen {
+    position: relative;
+    background: var(--pc-device-screen-bg);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background var(--pc-transition);
+    border-radius: 24px;
+}
+
+.preview-center__device-shell--desktop .preview-center__device-screen {
+    border-radius: 8px;
+}
+
+.preview-center__device-shell--tablet .preview-center__device-screen {
+    border-radius: 16px;
+}
+
+/* 刘海屏 */
+.preview-center__device-notch {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--pc-device-notch);
+    border-radius: 0 0 18px 18px;
+    z-index: 2;
+}
+
+/* 挖孔屏 */
+.preview-center__device-punch-hole {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--pc-device-notch);
+    border-radius: 50%;
+    z-index: 2;
+}
+
+/* Home Indicator */
+.preview-center__device-home-indicator {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40%;
+    max-width: 134px;
+    height: 4px;
+    background: var(--pc-text-muted);
+    border-radius: 2px;
+    z-index: 2;
+    opacity: 0.5;
+}
+
+/* 微信顶部栏 */
+.preview-center__wechat-topbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #ededed;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #191919;
+}
+
+[data-theme="dark"] .preview-center__wechat-topbar,
+[data-theme="auto"] .preview-center__wechat-topbar {
+    background: #1e1e1e;
+    color: #e4e6eb;
+}
+
+@media (prefers-color-scheme: dark) {
+    [data-theme="auto"] .preview-center__wechat-topbar {
+        background: #1e1e1e;
+        color: #e4e6eb;
+    }
+}
+
+/* 微信底部栏 */
+.preview-center__wechat-bottombar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #f7f7f7;
+    border-top: 1px solid #e0e0e0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 4px 0;
+}
+
+[data-theme="dark"] .preview-center__wechat-bottombar,
+[data-theme="auto"] .preview-center__wechat-bottombar {
+    background: #1e1e1e;
+    border-top-color: #2d3748;
+}
+
+@media (prefers-color-scheme: dark) {
+    [data-theme="auto"] .preview-center__wechat-bottombar {
+        background: #1e1e1e;
+        border-top-color: #2d3748;
+    }
+}
+
+.preview-center__wechat-tab {
+    font-size: 10px;
+    color: #888;
+    text-align: center;
+    padding: 4px 8px;
+}
+
+.preview-center__wechat-tab--active {
+    color: #07c160;
+}
+
+/* 浏览器顶部栏 */
+.preview-center__browser-topbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #e8e8e8;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 6px;
+}
+
+[data-theme="dark"] .preview-center__browser-topbar,
+[data-theme="auto"] .preview-center__browser-topbar {
+    background: #2d2d2d;
+}
+
+@media (prefers-color-scheme: dark) {
+    [data-theme="auto"] .preview-center__browser-topbar {
+        background: #2d2d2d;
+    }
+}
+
+.preview-center__browser-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.preview-center__browser-dot--red { background: #ff5f57; }
+.preview-center__browser-dot--yellow { background: #febc2e; }
+.preview-center__browser-dot--green { background: #28c840; }
+
+.preview-center__browser-url {
+    flex: 1;
+    margin: 0 8px;
+    padding: 3px 8px;
+    background: #fff;
+    border-radius: 4px;
+    font-size: 11px;
+    color: #666;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+[data-theme="dark"] .preview-center__browser-url,
+[data-theme="auto"] .preview-center__browser-url {
+    background: #1a1a2e;
+    color: #999;
+}
+
+@media (prefers-color-scheme: dark) {
+    [data-theme="auto"] .preview-center__browser-url {
+        background: #1a1a2e;
+        color: #999;
+    }
+}
+
+/* 二维码 Canvas */
+.preview-center__qr-canvas {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+}
+
+/* ========== 横屏 ========== */
+[data-orientation="landscape"] .preview-center__device-shell {
+    transform: rotate(90deg);
+}
+
+/* ========== 缩放 ========== */
+.preview-center__device-shell[data-zoom="0.3"] { transform: scale(0.3); }
+.preview-center__device-shell[data-zoom="0.4"] { transform: scale(0.4); }
+.preview-center__device-shell[data-zoom="0.5"] { transform: scale(0.5); }
+.preview-center__device-shell[data-zoom="0.6"] { transform: scale(0.6); }
+.preview-center__device-shell[data-zoom="0.7"] { transform: scale(0.7); }
+.preview-center__device-shell[data-zoom="0.8"] { transform: scale(0.8); }
+.preview-center__device-shell[data-zoom="0.9"] { transform: scale(0.9); }
+.preview-center__device-shell[data-zoom="1.0"] { transform: scale(1.0); }
+.preview-center__device-shell[data-zoom="1.1"] { transform: scale(1.1); }
+.preview-center__device-shell[data-zoom="1.2"] { transform: scale(1.2); }
+.preview-center__device-shell[data-zoom="1.3"] { transform: scale(1.3); }
+.preview-center__device-shell[data-zoom="1.5"] { transform: scale(1.5); }
+
+[data-orientation="landscape"] .preview-center__device-shell[data-zoom="0.3"] { transform: rotate(90deg) scale(0.3); }
+[data-orientation="landscape"] .preview-center__device-shell[data-zoom="0.4"] { transform: rotate(90deg) scale(0.4); }
+[data-orientation="landscape"] .preview-center__device-shell[data-zoom="0.5"] { transform: rotate(90deg) scale(0.5); }
+[data-orientation="landscape"] .preview-center__device-shell[data-zoom="0.6"] { transform: rotate(90deg) scale(0.6); }
+[data-orientation="landscape"] .preview-center__device-shell[data-zoom="0.7"] { transform: rotate(90deg) scale(0.7); }
+[data-orientation="landscape"] .preview-center__device-shell[data-zoom="0.8"] { transform: rotate(90deg) scale(0.8); }
+[data-orientation="landscape"] .preview-center__device-shell[data-zoom="0.9"] { transform: rotate(90deg) scale(0.9); }
+[data-orientation="landscape"] .preview-center__device-shell[data-zoom="1.0"] { transform: rotate(90deg) scale(1.0); }
+[data-orientation="landscape"] .preview-center__device-shell[data-zoom="1.1"] { transform: rotate(90deg) scale(1.1); }
+[data-orientation="landscape"] .preview-center__device-shell[data-zoom="1.2"] { transform: rotate(90deg) scale(1.2); }
+[data-orientation="landscape"] .preview-center__device-shell[data-zoom="1.3"] { transform: rotate(90deg) scale(1.3); }
+[data-orientation="landscape"] .preview-center__device-shell[data-zoom="1.5"] { transform: rotate(90deg) scale(1.5); }
+
+/* ========== 底部工具栏 ========== */
+.preview-center__toolbar {
+    grid-row: 2;
+    grid-column: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 12px 24px;
+    background: var(--pc-bg-secondary);
+    border-top: 1px solid var(--pc-border-color);
+    flex-wrap: wrap;
+}
+
+.preview-center__toolbar-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.preview-center__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border: 1px solid var(--pc-border-color);
+    border-radius: var(--pc-radius-sm);
+    background: var(--pc-bg-secondary);
+    color: var(--pc-text-primary);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--pc-transition);
+    white-space: nowrap;
+    user-select: none;
+}
+
+.preview-center__btn:hover {
+    background: var(--pc-bg-tertiary);
+    border-color: var(--pc-text-muted);
+}
+
+.preview-center__btn:active {
+    transform: scale(0.97);
+}
+
+.preview-center__btn--sm {
+    padding: 5px 10px;
+    font-size: 12px;
+    min-width: 32px;
+    justify-content: center;
+}
+
+.preview-center__btn--primary {
+    background: var(--pc-accent);
+    color: #fff;
+    border-color: var(--pc-accent);
+}
+
+.preview-center__btn--primary:hover {
+    background: var(--pc-accent-hover);
+    border-color: var(--pc-accent-hover);
+}
+
+.preview-center__btn-icon { font-size: 16px; line-height: 1; }
+.preview-center__btn-label { font-size: 13px; }
+
+.preview-center__zoom-control {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.preview-center__zoom-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--pc-text-secondary);
+    min-width: 36px;
+    text-align: center;
+    user-select: none;
+}
+
+/* ========== 截图闪光 ========== */
+@keyframes screenshotFlash {
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+.preview-center__screenshot-flash {
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    z-index: 100;
+    pointer-events: none;
+    animation: screenshotFlash 0.4s ease-out;
+}
+
+/* ========== 响应式 ========== */
+@media (max-width: 900px) {
+    .preview-center {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr auto;
+    }
+
+    .preview-center__sidebar {
+        grid-row: 1;
+        grid-column: 1;
+        border-right: none;
+        border-bottom: 1px solid var(--pc-border-color);
+        flex-direction: row;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: 8px;
+    }
+
+    .preview-center__sidebar-header { display: none; }
+
+    .preview-center__device-list {
+        display: flex;
+        gap: 4px;
+        padding: 0;
+    }
+
+    .preview-center__device-item {
+        flex-shrink: 0;
+        margin-bottom: 0;
+        flex-direction: column;
+        gap: 2px;
+        padding: 8px 12px;
+        font-size: 11px;
+    }
+
+    .preview-center__device-item-icon { font-size: 18px; width: auto; }
+    .preview-center__device-item-category { display: none; }
+    .preview-center__sidebar-footer { display: none; }
+
+    .preview-center__viewport {
+        grid-row: 2;
+        grid-column: 1;
+        padding: 16px;
+    }
+
+    .preview-center__toolbar {
+        grid-row: 3;
+        grid-column: 1;
+        padding: 8px 12px;
+        gap: 8px;
+    }
+
+    .preview-center__btn-label { display: none; }
+    .preview-center__btn { padding: 7px 10px; }
+}
+
+@media (max-width: 480px) {
+    .preview-center {
+        min-height: 400px;
+        border-radius: 0;
+    }
+
+    .preview-center__viewport { padding: 8px; }
+    .preview-center__toolbar { gap: 4px; padding: 6px 8px; }
+    .preview-center__toolbar-group { gap: 4px; }
+    .preview-center__btn { padding: 5px 8px; font-size: 11px; }
+    .preview-center__btn--sm { padding: 4px 6px; font-size: 10px; min-width: 24px; }
+}

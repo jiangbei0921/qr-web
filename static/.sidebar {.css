@@ -1,0 +1,8 @@
+.sidebar {
+    width: 60px;
+    transition: width 0.4s ease 6s;  /* 收起延迟6秒 */
+}
+.sidebar:hover {
+    width: 280px;
+    transition: width 0.4s ease 0s;  /* 展开无延迟 */
+}

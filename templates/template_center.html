@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>模板中心 - SmartCode</title>
+    <link rel="stylesheet" href="/static/design-system.css">
+    <link rel="stylesheet" href="/static/template_center.css">
+</head>
+<body>
+
+    <!-- 顶部导航栏 -->
+    <header class="tc-nav">
+        <div class="tc-nav-left">
+            <div class="tc-logo">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36">
+                    <polygon points="18,1 35,18 18,35 1,18" fill="none" stroke="#4F46E5" stroke-width="2.5" stroke-linejoin="miter"/>
+                    <polygon points="18,4 32,18 18,32 4,18" fill="none" stroke="#7C3AED" stroke-width="1" stroke-linejoin="miter"/>
+                    <polygon points="18,1 24,10 12,10" fill="#4F46E5"/>
+                    <rect x="11" y="14" width="14" height="3" rx="1.5" fill="#4F46E5"/>
+                    <rect x="11" y="19" width="14" height="3" rx="1.5" fill="#7C3AED"/>
+                    <rect x="11" y="24" width="10" height="3" rx="1.5" fill="#4F46E5"/>
+                </svg>
+            </div>
+            <span class="tc-brand">SmartCode</span>
+        </div>
+
+        <nav class="tc-nav-center">
+            <a href="/" class="tc-nav-link">首页</a>
+            <a href="/scene" class="tc-nav-link">场景</a>
+            <a href="/templates-center" class="tc-nav-link active">模板</a>
+            <a href="#" class="tc-nav-link">发现</a>
+        </nav>
+
+        <div class="tc-nav-right">
+            <button class="tc-lang-switch">中文</button>
+            <button class="tc-btn-login" onclick="window.location.href='/?show=login'">登录</button>
+            <button class="tc-btn-create" onclick="window.location.href='/?show=login'">开始创建</button>
+        </div>
+    </header>
+
+    <!-- 搜索区域 -->
+    <section class="tc-search">
+        <h1 class="tc-search-title">发现你需要的模板</h1>
+        <div class="tc-search-box">
+            <div class="tc-search-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+            </div>
+            <input type="text" class="tc-search-input" placeholder="搜索模板名称或关键词...">
+            <button class="tc-search-btn">搜索</button>
+        </div>
+    </section>
+
+    <!-- 分类筛选栏 -->
+    <div class="tc-filter">
+        <div class="tc-filter-tabs">
+            <button class="tc-filter-tab active">全部</button>
+            <button class="tc-filter-tab">个人主页</button>
+            <button class="tc-filter-tab">求职工作</button>
+            <button class="tc-filter-tab">学习教育</button>
+            <button class="tc-filter-tab">商业经营</button>
+            <button class="tc-filter-tab">活动组织</button>
+            <button class="tc-filter-tab">餐饮菜单</button>
+            <button class="tc-filter-tab">摄影作品</button>
+            <button class="tc-filter-tab">房屋租赁</button>
+            <button class="tc-filter-tab">企业办公</button>
+        </div>
+        <select class="tc-filter-sort">
+            <option value="hot">最热门</option>
+            <option value="new">最新发布</option>
+            <option value="most">使用最多</option>
+        </select>
+    </div>
+
+    <!-- 模板卡片区域 -->
+    <section class="tc-cards">
+        <div class="tc-cards-grid">
+            <div class="tc-card">
+                <div class="tc-card-cover" style="background: linear-gradient(135deg, #F472B6, #FB7185);">
+                    <span class="tc-card-tag">活动</span>
+                </div>
+                <div class="tc-card-body">
+                    <div class="tc-card-name">婚礼邀请函</div>
+                    <div class="tc-card-meta">
+                        <span class="tc-card-category">活动</span>
+                        <span class="tc-card-usage">12,300 次使用</span>
+                    </div>
+                    <div class="tc-card-favorite">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                        <span>2,340</span>
+                    </div>
+                    <div class="tc-card-actions">
+                        <button class="tc-card-btn-secondary">预览</button>
+                        <button class="tc-card-btn-primary">使用模板</button>
+                    </div>
+                </div>
+            </div>
+            <div class="tc-card">
+                <div class="tc-card-cover" style="background: linear-gradient(135deg, #60A5FA, #818CF8);">
+                    <span class="tc-card-tag">求职</span>
+                </div>
+                <div class="tc-card-body">
+                    <div class="tc-card-name">个人简历</div>
+                    <div class="tc-card-meta">
+                        <span class="tc-card-category">求职</span>
+                        <span class="tc-card-usage">8,900 次使用</span>
+                    </div>
+                    <div class="tc-card-favorite">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                        <span>1,870</span>
+                    </div>
+                    <div class="tc-card-actions">
+                        <button class="tc-card-btn-secondary">预览</button>
+                        <button class="tc-card-btn-primary">使用模板</button>
+                    </div>
+                </div>
+            </div>
+            <div class="tc-card">
+                <div class="tc-card-cover" style="background: linear-gradient(135deg, #FBBF24, #F59E0B);">
+                    <span class="tc-card-tag">餐饮</span>
+                </div>
+                <div class="tc-card-body">
+                    <div class="tc-card-name">餐厅菜单</div>
+                    <div class="tc-card-meta">
+                        <span class="tc-card-category">餐饮</span>
+                        <span class="tc-card-usage">7,200 次使用</span>
+                    </div>
+                    <div class="tc-card-favorite">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                        <span>1,560</span>
+                    </div>
+                    <div class="tc-card-actions">
+                        <button class="tc-card-btn-secondary">预览</button>
+                        <button class="tc-card-btn-primary">使用模板</button>
+                    </div>
+                </div>
+            </div>
+            <div class="tc-card">
+                <div class="tc-card-cover" style="background: linear-gradient(135deg, #34D399, #2DD4BF);">
+                    <span class="tc-card-tag">商业</span>
+                </div>
+                <div class="tc-card-body">
+                    <div class="tc-card-name">商品详情</div>
+                    <div class="tc-card-meta">
+                        <span class="tc-card-category">商业</span>
+                        <span class="tc-card-usage">6,800 次使用</span>
+                    </div>
+                    <div class="tc-card-favorite">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                        <span>1,420</span>
+                    </div>
+                    <div class="tc-card-actions">
+                        <button class="tc-card-btn-secondary">预览</button>
+                        <button class="tc-card-btn-primary">使用模板</button>
+                    </div>
+                </div>
+            </div>
+            <div class="tc-card">
+                <div class="tc-card-cover" style="background: linear-gradient(135deg, #A78BFA, #C084FC);">
+                    <span class="tc-card-tag">教育</span>
+                </div>
+                <div class="tc-card-body">
+                    <div class="tc-card-name">课程资料</div>
+                    <div class="tc-card-meta">
+                        <span class="tc-card-category">教育</span>
+                        <span class="tc-card-usage">5,400 次使用</span>
+                    </div>
+                    <div class="tc-card-favorite">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                        <span>1,150</span>
+                    </div>
+                    <div class="tc-card-actions">
+                        <button class="tc-card-btn-secondary">预览</button>
+                        <button class="tc-card-btn-primary">使用模板</button>
+                    </div>
+                </div>
+            </div>
+            <div class="tc-card">
+                <div class="tc-card-cover" style="background: linear-gradient(135deg, #94A3B8, #64748B);">
+                    <span class="tc-card-tag">企业</span>
+                </div>
+                <div class="tc-card-body">
+                    <div class="tc-card-name">设备档案</div>
+                    <div class="tc-card-meta">
+                        <span class="tc-card-category">企业</span>
+                        <span class="tc-card-usage">4,100 次使用</span>
+                    </div>
+                    <div class="tc-card-favorite">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                        <span>980</span>
+                    </div>
+                    <div class="tc-card-actions">
+                        <button class="tc-card-btn-secondary">预览</button>
+                        <button class="tc-card-btn-primary">使用模板</button>
+                    </div>
+                </div>
+            </div>
+            <div class="tc-card">
+                <div class="tc-card-cover" style="background: linear-gradient(135deg, #6366F1, #3B82F6);">
+                    <span class="tc-card-tag">摄影</span>
+                </div>
+                <div class="tc-card-body">
+                    <div class="tc-card-name">摄影作品集</div>
+                    <div class="tc-card-meta">
+                        <span class="tc-card-category">摄影</span>
+                        <span class="tc-card-usage">4,800 次使用</span>
+                    </div>
+                    <div class="tc-card-favorite">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                        <span>1,320</span>
+                    </div>
+                    <div class="tc-card-actions">
+                        <button class="tc-card-btn-secondary">预览</button>
+                        <button class="tc-card-btn-primary">使用模板</button>
+                    </div>
+                </div>
+            </div>
+            <div class="tc-card">
+                <div class="tc-card-cover" style="background: linear-gradient(135deg, #8B5CF6, #A78BFA);">
+                    <span class="tc-card-tag">活动</span>
+                </div>
+                <div class="tc-card-body">
+                    <div class="tc-card-name">活动报名</div>
+                    <div class="tc-card-meta">
+                        <span class="tc-card-category">活动</span>
+                        <span class="tc-card-usage">6,100 次使用</span>
+                    </div>
+                    <div class="tc-card-favorite">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                        <span>1,750</span>
+                    </div>
+                    <div class="tc-card-actions">
+                        <button class="tc-card-btn-secondary">预览</button>
+                        <button class="tc-card-btn-primary">使用模板</button>
+                    </div>
+                </div>
+            </div>
+            <div class="tc-card">
+                <div class="tc-card-cover" style="background: linear-gradient(135deg, #10B981, #059669);">
+                    <span class="tc-card-tag">企业</span>
+                </div>
+                <div class="tc-card-body">
+                    <div class="tc-card-name">企业介绍</div>
+                    <div class="tc-card-meta">
+                        <span class="tc-card-category">企业</span>
+                        <span class="tc-card-usage">3,500 次使用</span>
+                    </div>
+                    <div class="tc-card-favorite">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                        <span>820</span>
+                    </div>
+                    <div class="tc-card-actions">
+                        <button class="tc-card-btn-secondary">预览</button>
+                        <button class="tc-card-btn-primary">使用模板</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 分页 -->
+    <div class="tc-pagination">
+        <button class="tc-page-btn" disabled>&lt;</button>
+        <button class="tc-page-btn active">1</button>
+        <button class="tc-page-btn">2</button>
+        <button class="tc-page-btn">3</button>
+        <button class="tc-page-btn">...</button>
+        <button class="tc-page-btn">8</button>
+        <button class="tc-page-btn">&gt;</button>
+    </div>
+
+</body>
+</html>

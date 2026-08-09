@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>场景中心 - SmartCode</title>
+    <link rel="stylesheet" href="/static/design-system.css">
+    <link rel="stylesheet" href="/static/scene.css">
+</head>
+<body>
+
+    <!-- 顶部导航栏 -->
+    <header class="scene-nav">
+        <div class="scene-nav-left">
+            <div class="scene-logo">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36">
+                    <polygon points="18,1 35,18 18,35 1,18" fill="none" stroke="#4F46E5" stroke-width="2.5" stroke-linejoin="miter"/>
+                    <polygon points="18,4 32,18 18,32 4,18" fill="none" stroke="#7C3AED" stroke-width="1" stroke-linejoin="miter"/>
+                    <polygon points="18,1 24,10 12,10" fill="#4F46E5"/>
+                    <rect x="11" y="14" width="14" height="3" rx="1.5" fill="#4F46E5"/>
+                    <rect x="11" y="19" width="14" height="3" rx="1.5" fill="#7C3AED"/>
+                    <rect x="11" y="24" width="10" height="3" rx="1.5" fill="#4F46E5"/>
+                </svg>
+            </div>
+            <span class="scene-brand">SmartCode</span>
+        </div>
+
+        <nav class="scene-nav-center">
+            <a href="/" class="scene-nav-link">首页</a>
+            <a href="/scene" class="scene-nav-link active">场景</a>
+            <a href="/templates-center" class="scene-nav-link">模板</a>
+            <a href="#" class="scene-nav-link">发现</a>
+        </nav>
+
+        <div class="scene-nav-right">
+            <button class="scene-lang-switch">中文</button>
+            <button class="scene-btn-login" onclick="window.location.href='/?show=login'">登录</button>
+            <button class="scene-btn-create" onclick="window.location.href='/?show=login'">开始创建</button>
+        </div>
+    </header>
+
+    <!-- 页面头部 -->
+    <section class="scene-header">
+        <h1 class="scene-header-title">选择你的使用场景</h1>
+        <p class="scene-header-subtitle">我们帮你找到最合适的解决方案</p>
+    </section>
+
+    <!-- 分类标签栏 -->
+    <div class="scene-tabs">
+        <div class="scene-tabs-scroll">
+            <button class="scene-tab active">全部</button>
+            <button class="scene-tab">个人</button>
+            <button class="scene-tab">学习</button>
+            <button class="scene-tab">工作</button>
+            <button class="scene-tab">商业</button>
+            <button class="scene-tab">活动</button>
+            <button class="scene-tab">家庭</button>
+            <button class="scene-tab">社交</button>
+            <button class="scene-tab">创作</button>
+            <button class="scene-tab">旅行</button>
+            <button class="scene-tab">企业</button>
+        </div>
+    </div>
+
+    <!-- 场景卡片区域 -->
+    <section class="scene-cards">
+        <div class="scene-cards-grid">
+            <a href="/templates?scene=个人主页" class="scene-card">
+                <div class="scene-card-cover" style="background: linear-gradient(135deg, #F472B6, #FB7185);"></div>
+                <div class="scene-card-body">
+                    <div class="scene-card-name">个人主页</div>
+                    <div class="scene-card-desc">打造你的专属个人品牌页面</div>
+                    <div class="scene-card-users">8,200 人使用</div>
+                    <span class="scene-card-btn">立即创建</span>
+                </div>
+            </a>
+            <a href="/templates?scene=电子名片" class="scene-card">
+                <div class="scene-card-cover" style="background: linear-gradient(135deg, #60A5FA, #818CF8);"></div>
+                <div class="scene-card-body">
+                    <div class="scene-card-name">电子名片</div>
+                    <div class="scene-card-desc">扫码即存，商务社交利器</div>
+                    <div class="scene-card-users">6,500 人使用</div>
+                    <span class="scene-card-btn">立即创建</span>
+                </div>
+            </a>
+            <a href="/templates?scene=求职简历" class="scene-card">
+                <div class="scene-card-cover" style="background: linear-gradient(135deg, #22D3EE, #38BDF8);"></div>
+                <div class="scene-card-body">
+                    <div class="scene-card-name">求职简历</div>
+                    <div class="scene-card-desc">让招聘者快速了解你</div>
+                    <div class="scene-card-users">9,100 人使用</div>
+                    <span class="scene-card-btn">立即创建</span>
+                </div>
+            </a>
+            <a href="/templates?scene=商品销售" class="scene-card">
+                <div class="scene-card-cover" style="background: linear-gradient(135deg, #34D399, #2DD4BF);"></div>
+                <div class="scene-card-body">
+                    <div class="scene-card-name">商品销售</div>
+                    <div class="scene-card-desc">扫码直达商品详情页</div>
+                    <div class="scene-card-users">5,700 人使用</div>
+                    <span class="scene-card-btn">立即创建</span>
+                </div>
+            </a>
+            <a href="/templates?scene=优惠券" class="scene-card">
+                <div class="scene-card-cover" style="background: linear-gradient(135deg, #FBBF24, #F59E0B);"></div>
+                <div class="scene-card-body">
+                    <div class="scene-card-name">优惠券</div>
+                    <div class="scene-card-desc">扫码领券，精准营销</div>
+                    <div class="scene-card-users">4,300 人使用</div>
+                    <span class="scene-card-btn">立即创建</span>
+                </div>
+            </a>
+            <a href="/templates?scene=电子菜单" class="scene-card">
+                <div class="scene-card-cover" style="background: linear-gradient(135deg, #F97316, #FB923C);"></div>
+                <div class="scene-card-body">
+                    <div class="scene-card-name">电子菜单</div>
+                    <div class="scene-card-desc">无接触点餐，安全高效</div>
+                    <div class="scene-card-users">7,500 人使用</div>
+                    <span class="scene-card-btn">立即创建</span>
+                </div>
+            </a>
+            <a href="/templates?scene=婚礼邀请" class="scene-card">
+                <div class="scene-card-cover" style="background: linear-gradient(135deg, #EC4899, #D946EF);"></div>
+                <div class="scene-card-body">
+                    <div class="scene-card-name">婚礼邀请</div>
+                    <div class="scene-card-desc">专属数字婚礼邀请函</div>
+                    <div class="scene-card-users">3,800 人使用</div>
+                    <span class="scene-card-btn">立即创建</span>
+                </div>
+            </a>
+            <a href="/templates?scene=活动报名" class="scene-card">
+                <div class="scene-card-cover" style="background: linear-gradient(135deg, #8B5CF6, #A78BFA);"></div>
+                <div class="scene-card-body">
+                    <div class="scene-card-name">活动报名</div>
+                    <div class="scene-card-desc">扫码即可完成活动报名</div>
+                    <div class="scene-card-users">6,100 人使用</div>
+                    <span class="scene-card-btn">立即创建</span>
+                </div>
+            </a>
+            <a href="/templates?scene=学习资料" class="scene-card">
+                <div class="scene-card-cover" style="background: linear-gradient(135deg, #6366F1, #3B82F6);"></div>
+                <div class="scene-card-body">
+                    <div class="scene-card-name">学习资料</div>
+                    <div class="scene-card-desc">一码分享所有课程内容</div>
+                    <div class="scene-card-users">5,200 人使用</div>
+                    <span class="scene-card-btn">立即创建</span>
+                </div>
+            </a>
+            <a href="/templates?scene=作品集" class="scene-card">
+                <div class="scene-card-cover" style="background: linear-gradient(135deg, #94A3B8, #64748B);"></div>
+                <div class="scene-card-body">
+                    <div class="scene-card-name">作品集</div>
+                    <div class="scene-card-desc">展示你的创意与才华</div>
+                    <div class="scene-card-users">4,800 人使用</div>
+                    <span class="scene-card-btn">立即创建</span>
+                </div>
+            </a>
+            <a href="/templates?scene=设备管理" class="scene-card">
+                <div class="scene-card-cover" style="background: linear-gradient(135deg, #64748B, #475569);"></div>
+                <div class="scene-card-body">
+                    <div class="scene-card-name">设备管理</div>
+                    <div class="scene-card-desc">一物一码，高效管理</div>
+                    <div class="scene-card-users">3,200 人使用</div>
+                    <span class="scene-card-btn">立即创建</span>
+                </div>
+            </a>
+            <a href="/templates?scene=企业介绍" class="scene-card">
+                <div class="scene-card-cover" style="background: linear-gradient(135deg, #10B981, #059669);"></div>
+                <div class="scene-card-body">
+                    <div class="scene-card-name">企业介绍</div>
+                    <div class="scene-card-desc">展示企业形象与实力</div>
+                    <div class="scene-card-users">2,900 人使用</div>
+                    <span class="scene-card-btn">立即创建</span>
+                </div>
+            </a>
+        </div>
+    </section>
+
+</body>
+</html>
