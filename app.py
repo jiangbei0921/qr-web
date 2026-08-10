@@ -65,12 +65,13 @@ from routes.workspace import workspace_bp     # 工作台：仪表盘、统一�
 from routes.open_api import open_api_bp       # 开放平台：API Key、JWT、OAuth2
 from routes.file_mgr import file_bp           # 文件管理：上传、下载、文件库
 from routes.admin import admin_bp             # 管理后台：用户管理、审计日志
+from routes.qrkit.api import qrkit_bp          # 二维码内核：新一代生成引擎(P0)
 
 # ============ 注册所有蓝图到 Flask 应用 ============
 # 将每个功能模块的蓝图注册到应用中，使其路由生效
 for bp in [auth_bp, qrcode_bp, form_bp, workorder_bp, asset_bp, inspection_bp,
            department_bp, notification_bp, workflow_bp, subscription_bp,
-           workspace_bp, open_api_bp, file_bp, admin_bp]:
+           workspace_bp, open_api_bp, file_bp, admin_bp, qrkit_bp]:
     app.register_blueprint(bp)
 
 # ============ 上下文处理器：注入国际化信息到所有模板 ============
