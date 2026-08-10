@@ -337,7 +337,7 @@ html, body {
 }
 
 .dh-hero-greeting .dh-username {
-    color: #A5B4FC;
+    color: #e0b85c;
     font-weight: 600;
 }
 
@@ -370,7 +370,7 @@ html, body {
     font-size: 14px;
     font-weight: 600;
     color: #FFFFFF;
-    background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+    background: linear-gradient(135deg, #b8860b 0%, #b8860b 100%);
     border: none;
     border-radius: var(--radius);
     cursor: pointer;
@@ -382,7 +382,7 @@ html, body {
 .dh-hero-btn-primary:hover {
     transform: translateY(-2px) scale(1.02);
     box-shadow: 0 6px 24px rgba(79, 70, 229, 0.45);
-    background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+    background: linear-gradient(135deg, #c9a84c 0%, #d4a853 100%);
 }
 
 .dh-hero-btn-secondary {
@@ -991,7 +991,7 @@ tbody tr:hover {
 
 .ds-icon-qrcodes {
     background: rgba(79, 70, 229, 0.08);
-    color: #4F46E5;
+    color: #b8860b;
 }
 
 .ds-icon-scans {
@@ -1001,7 +1001,7 @@ tbody tr:hover {
 
 .ds-icon-submissions {
     background: rgba(245, 158, 11, 0.08);
-    color: #F59E0B;
+    color: #D4A853;
 }
 
 .ds-icon-today {
@@ -1011,7 +1011,7 @@ tbody tr:hover {
 
 .ds-icon-week {
     background: rgba(139, 92, 246, 0.08);
-    color: #8B5CF6;
+    color: #d4a853;
 }
 
 .ds-icon-links {

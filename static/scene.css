@@ -5,8 +5,8 @@
 :root,
 [data-theme="light"] {
     --scene-primary: var(--ds-accent-light);
-    --scene-primary-light: #7C3AED;
-    --scene-gradient: linear-gradient(135deg, var(--ds-accent-light) 0%, #7C3AED 50%, #A855F7 100%);
+    --scene-primary-light: #b8860b;
+    --scene-gradient: linear-gradient(135deg, var(--ds-accent-light) 0%, #b8860b 50%, #d4a853 100%);
     --scene-bg: var(--ds-bg-light);
     --scene-text: var(--ds-text-primary-light);
     --scene-text-secondary: var(--ds-text-secondary-light);
@@ -18,8 +18,8 @@
 
 [data-theme="dark"] {
     --scene-primary: var(--ds-accent);
-    --scene-primary-light: #8B5CF6;
-    --scene-gradient: linear-gradient(135deg, var(--ds-accent) 0%, #8B5CF6 50%, #A855F7 100%);
+    --scene-primary-light: #d4a853;
+    --scene-gradient: linear-gradient(135deg, var(--ds-accent) 0%, #d4a853 50%, #d4a853 100%);
     --scene-bg: var(--ds-bg);
     --scene-text: var(--ds-text-primary);
     --scene-text-secondary: var(--ds-text-secondary);

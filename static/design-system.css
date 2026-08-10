@@ -13,7 +13,7 @@
   --ds-accent-glow: rgba(212, 168, 83, 0.25);
   --ds-success: #34C759;
   --ds-success-glow: rgba(52, 199, 89, 0.25);
-  --ds-warning: #FF9500;
+  --ds-warning: #D4A853;
   --ds-warning-glow: rgba(255, 149, 0, 0.25);
   --ds-danger: #FF3B30;
   --ds-danger-glow: rgba(255, 59, 48, 0.25);
@@ -106,7 +106,7 @@
   --ds-accent-glow: rgba(212, 168, 83, 0.3);
   --ds-success: #30D158;
   --ds-success-glow: rgba(48, 209, 88, 0.3);
-  --ds-warning: #FF9F0A;
+  --ds-warning: #D4A853;
   --ds-warning-glow: rgba(255, 159, 10, 0.3);
   --ds-danger: #FF453A;
   --ds-danger-glow: rgba(255, 69, 58, 0.3);

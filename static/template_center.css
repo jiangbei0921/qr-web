@@ -5,8 +5,8 @@
 :root,
 [data-theme="light"] {
     --tc-primary: var(--ds-accent-light);
-    --tc-primary-light: #7C3AED;
-    --tc-gradient: linear-gradient(135deg, var(--ds-accent-light) 0%, #7C3AED 50%, #A855F7 100%);
+    --tc-primary-light: #b8860b;
+    --tc-gradient: linear-gradient(135deg, var(--ds-accent-light) 0%, #b8860b 50%, #d4a853 100%);
     --tc-bg: var(--ds-bg-light);
     --tc-text: var(--ds-text-primary-light);
     --tc-text-secondary: var(--ds-text-secondary-light);
@@ -18,8 +18,8 @@
 
 [data-theme="dark"] {
     --tc-primary: var(--ds-accent);
-    --tc-primary-light: #8B5CF6;
-    --tc-gradient: linear-gradient(135deg, var(--ds-accent) 0%, #8B5CF6 50%, #A855F7 100%);
+    --tc-primary-light: #d4a853;
+    --tc-gradient: linear-gradient(135deg, var(--ds-accent) 0%, #d4a853 50%, #d4a853 100%);
     --tc-bg: var(--ds-bg);
     --tc-text: var(--ds-text-primary);
     --tc-text-secondary: var(--ds-text-secondary);
