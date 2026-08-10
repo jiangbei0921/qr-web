@@ -5334,7 +5334,7 @@ signature = HMAC-SHA256(app_secret, method + path + body + timestamp)</div>
         }
     }
 initTheme() {
-        const saved = localStorage.getItem('theme') || 'light';
+        const saved = localStorage.getItem('theme') || 'dark';
         this.currentTheme = saved;
         document.documentElement.setAttribute(
             'data-theme', saved);
