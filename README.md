@@ -4,6 +4,15 @@
 
 智码云将二维码从「生成工具」升级为「业务入口」：扫码后可承接表单收集、工单流转、资产巡检、工作流自动化与企业组织协同，并对外提供开放平台（API Key / JWT / OAuth2）。
 
+## 🌐 在线体验
+
+> 将应用部署到任意支持 Python 的云平台（Railway / Render / Fly.io / 容器 / 自有服务器）后即可获得一个公网可访问的地址。部署完成后，把下方地址替换为你的真实网址：
+
+- **生产环境（公网）**：`（部署后在此填入你的网址，例如 https://smartcode.example.com）`
+- **本地预览**：http://localhost:5000
+
+部署方式见下方「生产部署」章节。
+
 ---
 
 ## 功能模块
@@ -75,16 +84,42 @@ python app.py
 
 ## 生产部署
 
-开发服务器（`python app.py`）**不可用于生产**。请使用 WSGI 服务器：
+开发服务器（`python app.py`）**不可用于生产**。请用 WSGI 服务器（gunicorn / waitress）或将应用容器化部署。
+
+### 方式一：gunicorn 直接运行
 
 ```bash
-# Linux / macOS（gunicorn）
-gunicorn -w 4 -b 0.0.0.0:5000 "app:app"
+# Linux / macOS
+gunicorn -c gunicorn.conf.py app:app
 
 # Windows（waitress）
 # pip install waitress
 waitress-serve --port=5000 app:app
 ```
+
+`gunicorn.conf.py` 会读取环境变量 `PORT`（默认 8000）与 `WEB_CONCURRENCY`（默认 4）。
+
+### 方式二：Docker（推荐，一键部署）
+
+```bash
+docker build -t smartcode .
+docker run -d --name smartcode -p 8000:8000 \
+  -e SECRET_KEY="你的密钥" \
+  -e SESSION_COOKIE_SECURE=1 \
+  -v smartcode-db:/app/data -v smartcode-uploads:/app/uploads \
+  smartcode
+```
+
+> 数据库（`data/`）与上传文件（`uploads/`）建议挂载卷持久化，否则容器重建后数据会丢失。
+
+### 方式三：云平台（Railway / Render / Fly.io / Heroku）
+
+仓库已包含 `Procfile` 与 `Dockerfile`，上述平台可直接识别并部署：
+
+1. 在平台新建 Python / Web 服务，关联本仓库
+2. 设置环境变量：`SECRET_KEY`（必填）、`SESSION_COOKIE_SECURE=1`（HTTPS 环境）
+3. 平台会自动注入 `PORT`，由 `Procfile` / `Dockerfile` 启动 gunicorn
+4. 部署完成后获得的公网地址，填回 README 顶部「🌐 在线体验」即可
 
 反向代理（Nginx）后，将 `SESSION_COOKIE_SECURE` 交由 HTTPS 承载；非本地环境应用会自动启用 `Secure` Cookie。
 
