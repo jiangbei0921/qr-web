@@ -1,5 +1,8 @@
 Flask==2.3.3
 Flask-CORS==4.0.0
+Werkzeug==2.3.8
 Pillow==10.0.0
 qrcode==7.4.2
 vobject==0.9.6.1
+# 生产部署 WSGI 服务器（Linux/macOS 用 gunicorn；Windows 可改用 waitress）
+gunicorn>=21.2.0
