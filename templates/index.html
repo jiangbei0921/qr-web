@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
     <title data-i18n="meta.title">ZhiQR - 二维码生成器</title>
     <meta name="initial-locale" content="{{ initial_locale|default('zh') }}">
     <script>window.__INITIAL_LOCALE__=document.querySelector('meta[name="initial-locale"]').getAttribute('content');</script>
@@ -14,6 +15,8 @@
   document.documentElement.setAttribute('data-theme', t);
 })();
 </script>
+
+    <script src="/static/csrf.js"></script>
 </head>
 <body>
     <div class="container">

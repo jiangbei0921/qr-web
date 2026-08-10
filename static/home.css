@@ -5,10 +5,10 @@
 
 :root,
 [data-theme="light"] {
-    --home-primary: #C9A84C;
-    --home-primary-hover: #D4B35A;
+    --home-primary: var(--ds-accent);
+    --home-primary-hover: var(--ds-accent-hover);
     --home-primary-glow: rgba(201, 168, 76, 0.25);
-    --home-gradient: linear-gradient(135deg, #C9A84C 0%, #D4B35A 40%, #B8943A 100%);
+    --home-gradient: linear-gradient(135deg, var(--ds-accent) 0%, var(--ds-accent-hover) 40%, #8B6914 100%);
     --home-bg: #080808;
     --home-bg-secondary: #0E0E0E;
     --home-surface: #141414;
@@ -28,10 +28,10 @@
 }
 
 [data-theme="dark"] {
-    --home-primary: #C9A84C;
-    --home-primary-hover: #D4B35A;
+    --home-primary: var(--ds-accent);
+    --home-primary-hover: var(--ds-accent-hover);
     --home-primary-glow: rgba(201, 168, 76, 0.25);
-    --home-gradient: linear-gradient(135deg, #C9A84C 0%, #D4B35A 40%, #B8943A 100%);
+    --home-gradient: linear-gradient(135deg, var(--ds-accent) 0%, var(--ds-accent-hover) 40%, #8B6914 100%);
     --home-bg: #080808;
     --home-bg-secondary: #0E0E0E;
     --home-surface: #141414;

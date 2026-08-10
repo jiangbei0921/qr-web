@@ -16,6 +16,7 @@
 # ============ 导入必要的库 ============
 import os
 import socket
+import secrets
 
 import flask
 
@@ -80,6 +81,38 @@ def inject_i18n_context():
     """
     locale = _normalize_locale(session.get('preferred_lang') or request.args.get('lang') or _i18n_get_locale())
     return {'initial_locale': locale}
+
+# ============ CSRF 防护 ============
+@app.context_processor
+def inject_csrf_token():
+    """生成（每个会话仅一次）并向所有模板暴露 CSRF token。"""
+    token = session.get('_csrf_token')
+    if not token:
+        token = secrets.token_hex(32)
+        session['_csrf_token'] = token
+    return {'csrf_token': token}
+
+@app.before_request
+def csrf_protect():
+    """对状态变更的请求校验 CSRF token。
+
+    豁免：
+    - 安全方法（GET / HEAD / OPTIONS / TRACE）
+    - 使用 Bearer JWT 或 X-API-Key 的程序化 API 客户端（开放平台）
+    """
+    if request.method in ('GET', 'HEAD', 'OPTIONS', 'TRACE'):
+        return
+    # 程序化客户端通过 API Key / JWT 鉴权，不走会话 CSRF
+    auth = request.headers.get('Authorization', '')
+    if auth.startswith('Bearer ') or request.headers.get('X-API-Key'):
+        return
+    # token 优先取请求头（fetch），其次取表单字段（传统表单 POST）
+    token = request.headers.get('X-CSRFToken') or request.headers.get('X-CSRF-Token')
+    ct = request.content_type or ''
+    if not token and ('form-urlencoded' in ct or 'multipart/form-data' in ct):
+        token = request.form.get('csrf_token')
+    if not token or token != session.get('_csrf_token'):
+        return jsonify({'error': _safe_t('error.csrf', '请求校验失败，请刷新页面后重试')}), 403
 
 # 将配置应用到 Flask 应用
 app.secret_key = Config.SECRET_KEY

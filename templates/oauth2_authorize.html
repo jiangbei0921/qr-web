@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
     <title>授权确认 - 智码云</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -71,6 +72,8 @@
         }
         .btn-allow:hover { background: #0EA5E9; }
     </style>
+
+    <script src="/static/csrf.js"></script>
 </head>
 <body>
     <div class="auth-card">
@@ -87,6 +90,7 @@
             <input type="hidden" name="client_id" value="{{ client_id }}">
             <input type="hidden" name="redirect_uri" value="{{ redirect_uri }}">
             <input type="hidden" name="scope" value="{{ scope }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             <div class="actions">
                 <button type="button" class="btn-deny" onclick="history.back()">拒绝</button>
                 <button type="submit" class="btn-allow">同意授权</button>
