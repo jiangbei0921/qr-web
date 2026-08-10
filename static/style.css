@@ -8345,3 +8345,70 @@ body { transition: background-color .3s ease, color .3s ease; }
     scroll-behavior: auto !important;
   }
 }
+
+/* ============================================
+   Mobile bottom navigation + magnetic micro-interaction
+   ============================================ */
+@media (max-width: 768px) {
+  .bottom-bar {
+    display: flex;
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 200;
+    height: 56px;
+    align-items: stretch;
+    background: var(--surface, #1a1a1a);
+    border-top: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+    backdrop-filter: blur(12px) saturate(160%);
+    -webkit-backdrop-filter: blur(12px) saturate(160%);
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+  .bottom-bar .bottom-nav-item {
+    position: relative;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary, #c8c0b4);
+    font-size: 12px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: color .2s ease;
+  }
+  .bottom-bar .bottom-nav-item.active {
+    color: var(--primary, #D4A853);
+  }
+  .bottom-bar .bottom-nav-item.active::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 22px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--primary, #D4A853);
+  }
+  /* keep content clear of the fixed bar */
+  .main-content { padding-bottom: 72px !important; }
+  .content-area { padding-bottom: 72px; }
+}
+
+/* Magnetic / lift micro-interaction (CSS proxy) */
+.btn-primary,
+.btn-secondary,
+.ws-quick-card {
+  transition: transform .2s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow .2s ease,
+              background-color .2s ease,
+              border-color .2s ease;
+}
+.btn-primary:hover,
+.btn-secondary:hover {
+  transform: translateY(-1px);
+}
+.ws-quick-card:hover {
+  transform: translateY(-2px);
+}
