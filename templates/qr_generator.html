@@ -231,9 +231,12 @@
 
     <div class="toast" id="toast"></div>
 
+    <!-- 服务端直出的类型 schema（避免预览沙箱中 fetch 被拦截导致无法选择类型） -->
+    <script>window.QR_TYPES = {{ types | tojson | safe }};</script>
+
     <script>
         (function () {
-            var TYPES = [];          // 自描述 schema
+            var TYPES = window.QR_TYPES || [];   // 自描述 schema（服务端直出，缺省时回退到 fetch）
             var current = null;      // 当前类型 key
             var state = {
                 fg: '#000000', bg: '#FFFFFF', ec: 'M', style: 'square', size: 600
@@ -300,10 +303,15 @@
                 });
             }
 
-            // 拉取类型 schema
+            // 拉取类型 schema（优先使用服务端直出的 window.QR_TYPES，避免预览沙箱中 fetch 被拦截导致无法选择类型）
             function loadTypes() {
+                if (TYPES.length) {
+                    renderTypeGrid();
+                    if (TYPES.length) selectType(TYPES[0].type);
+                    return Promise.resolve();
+                }
                 return fetch('/api/qr/types').then(function (r) { return r.json(); }).then(function (d) {
-                    TYPES = d.types || [];
+                    TYPES = (d && d.types) || [];
                     renderTypeGrid();
                     if (TYPES.length) selectType(TYPES[0].type);
                 });

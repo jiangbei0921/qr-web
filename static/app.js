@@ -906,6 +906,9 @@ vcard: `<div>
     }
 
     async generate() {
+        // 旧静态生成已迁移至 qrkit 新内核，创建入口统一跳转 /generator
+        window.location.href = '/generator';
+        return;
         if (!this.currentType) {
             this.showNotification('error.selectType', 'error');
             return;
@@ -1285,6 +1288,9 @@ vcard: () => ({
     }
 
     async exportSvg() {
+        // 旧 SVG 导出已迁移至 qrkit 新内核（/generator 支持 SVG 下载）
+        window.location.href = '/generator';
+        return;
         try {
             const response = await fetch('/api/export_svg', {
                 method: 'POST',
@@ -1367,6 +1373,9 @@ vcard: () => ({
     }
 
     async generateBatch() {
+        // 批量生成将在 P2 接入 qrkit 新内核；当前统一跳转 /generator
+        window.location.href = '/generator';
+        return;
         const fileInput = document.getElementById('batch-file');
         const file = fileInput.files[0];
 
@@ -1795,6 +1804,9 @@ vcard: () => ({
     }
 
     async _doGenerate(content, type, onSuccess) {
+        // 旧静态生成已迁移至 qrkit 新内核，统一跳转 /generator
+        window.location.href = '/generator';
+        return;
         try {
             const response = await fetch('/api/generate', {
                 method: 'POST',
