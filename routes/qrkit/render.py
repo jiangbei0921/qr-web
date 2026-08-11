@@ -6,6 +6,7 @@
 """
 from io import BytesIO
 import qrcode
+from PIL import Image
 from qrcode.constants import (
     ERROR_CORRECT_L,
     ERROR_CORRECT_M,
@@ -46,6 +47,10 @@ def render_png(payload, opts):
     # qrcode 7.x 在部分样式下返回包装对象，取底层 PIL Image
     if hasattr(img, 'get_image'):
         img = img.get_image()
+    # 精确尺寸：按比例缩放到目标边长（LANCZOS 保持清晰且可被扫码识别）
+    size = opts.get('size')
+    if size and size > 0:
+        img = img.resize((size, size), Image.LANCZOS)
     buf = BytesIO()
     img.save(buf, 'PNG')
     buf.seek(0)

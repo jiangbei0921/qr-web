@@ -41,6 +41,11 @@ def _clean_options(options):
     style = options.get('style')
     if style in ('rounded', 'square'):
         opts['style'] = style
+    try:
+        sz = int(options.get('size', 0))
+    except (TypeError, ValueError):
+        sz = 0
+    opts['size'] = sz if 64 <= sz <= 4096 else 0
     return opts
 
 

@@ -172,6 +172,57 @@ class WifiType(QRTypeBuilder):
         return 'WIFI:' + ';'.join(parts) + ';;'
 
 
+class SmsType(QRTypeBuilder):
+    type_key = 'sms'
+    label = '短信'
+    fields = [
+        {'key': 'phone', 'label': '手机号码', 'required': True, 'placeholder': '13800138000'},
+        {'key': 'body', 'label': '短信内容', 'required': False},
+    ]
+
+    def build_payload(self, f):
+        phone = (f.get('phone') or '').strip()
+        if not phone:
+            raise QRValidationError('手机号码不能为空')
+        body = f.get('body') or ''
+        return f'SMSTO:{phone}:{body}'
+
+
+class TelType(QRTypeBuilder):
+    type_key = 'tel'
+    label = '电话'
+    fields = [
+        {'key': 'phone', 'label': '电话号码', 'required': True, 'placeholder': '13800138000'},
+    ]
+
+    def build_payload(self, f):
+        phone = (f.get('phone') or '').strip()
+        if not phone:
+            raise QRValidationError('电话号码不能为空')
+        return f'tel:{phone}'
+
+
+class GeoType(QRTypeBuilder):
+    type_key = 'geo'
+    label = '地理位置'
+    fields = [
+        {'key': 'lat', 'label': '纬度 (lat)', 'required': True, 'placeholder': '39.9042'},
+        {'key': 'lng', 'label': '经度 (lng)', 'required': True, 'placeholder': '116.4074'},
+    ]
+
+    def build_payload(self, f):
+        lat = (f.get('lat') or '').strip()
+        lng = (f.get('lng') or '').strip()
+        try:
+            float(lat)
+            float(lng)
+        except (TypeError, ValueError):
+            raise QRValidationError('经纬度必须是数字')
+        if not lat or not lng:
+            raise QRValidationError('经纬度不能为空')
+        return f'geo:{lat},{lng}'
+
+
 # ---------- 注册表 ----------
 class QRTypeRegistry:
     """类型注册表：新增类型只需 register 一个子类，核心逻辑零改动。"""
@@ -199,5 +250,5 @@ class QRTypeRegistry:
 
 
 registry = QRTypeRegistry()
-for _cls in (UrlType, TextType, EmailType, VCardType, WifiType):
+for _cls in (UrlType, TextType, EmailType, VCardType, WifiType, SmsType, TelType, GeoType):
     registry.register(_cls)

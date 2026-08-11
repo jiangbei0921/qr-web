@@ -199,6 +199,12 @@ def app_page():
     """
     return render_template('index.html')
 
+@app.route('/generator')
+def generator_page():
+    """新版二维码生成器（公开，基于 qrkit 内核，无需登录）"""
+    return render_template('qr_generator.html')
+
+
 @app.route('/dashboard')
 @login_required_page
 def dashboard():
