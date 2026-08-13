@@ -147,6 +147,20 @@
         .toast.err { border-color: #EF4444; color: #FCA5A5; }
         .hint { font-size: 12px; color: var(--tx-3); margin-top: 8px; }
         .badge { display: inline-block; font-size: 11px; padding: 3px 9px; border-radius: 999px; background: var(--gold-glow); color: var(--gold); margin-bottom: 10px; }
+        .tabs { max-width: 1080px; margin: 24px auto 0; padding: 0 20px; display: flex; gap: 10px; }
+        .tab {
+            padding: 10px 18px; border-radius: 12px; cursor: pointer; font-size: 14px; font-weight: 600;
+            background: var(--surface); border: 1px solid var(--border); color: var(--tx-2);
+            transition: all .2s cubic-bezier(.16,1,.3,1);
+        }
+        .tab:hover { transform: translateY(-2px); }
+        .tab.active { background: linear-gradient(135deg, var(--gold), var(--gold-hover)); color: #1A1206; border-color: var(--gold); }
+        .textarea {
+            width: 100%; padding: 12px 13px; border-radius: 11px; font-size: 13px; line-height: 1.6;
+            font-family: ui-monospace, Menlo, Consolas, monospace; background: var(--bg-2);
+            border: 1px solid var(--border); color: var(--tx); outline: none; resize: vertical;
+        }
+        .textarea:focus { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-glow); }
     </style>
 </head>
 <body>
@@ -158,7 +172,12 @@
         </div>
     </div>
 
-    <div class="layout">
+    <div class="tabs">
+        <button class="tab active" data-tab="single">✨ 单条生成</button>
+        <button class="tab" data-tab="batch">⚡ 批量生成</button>
+    </div>
+
+    <div id="single-panel" class="layout">
         <!-- 配置面板 -->
         <section class="glass">
             <span class="badge">新架构 · 自描述驱动</span>
@@ -226,6 +245,40 @@
                 </div>
                 <p class="hint" style="text-align:center">所有生成默认不落库（QuickGenerate），即开即用、零门槛。</p>
             </div>
+        </section>
+    </div>
+
+    <!-- 批量生成面板（新架构 · 复用 qrkit 内核） -->
+    <div id="batch-panel" class="layout" style="display:none">
+        <section class="glass">
+            <span class="badge">新架构 · 批量内核</span>
+            <h2 style="margin:4px 0 2px;font-size:20px">批量生成二维码</h2>
+            <p class="hint" style="margin-top:0">第一列填类型，后续列按该类型字段顺序（末列可含逗号）。支持可选表头行（首列 type）。</p>
+
+            <p class="card-title">粘贴批量数据（CSV / 每行一条）</p>
+            <textarea id="batch-input" class="textarea" rows="12" placeholder="url,https://example.com
+text,你好世界,这里的逗号会保留
+wifi,MyHome,password123,WPA
+email,hi@zhiqr.com,邮件标题,正文内容"></textarea>
+
+            <p class="hint">字段顺序：url→[url]；text→[text]；email→[email,subject,body]；vcard→[name,phone,email,company,title]；wifi→[ssid,password,security]；sms→[phone,body]；tel→[phone]；geo→[lat,lng]</p>
+
+            <p class="card-title">导出格式</p>
+            <div class="seg" id="batch-fmt-seg">
+                <button data-v="png" class="active">PNG（ZIP）</button>
+                <button data-v="svg">SVG（ZIP）</button>
+            </div>
+
+            <div style="margin-top:18px">
+                <button class="btn btn-primary" id="batch-run">⚡ 批量生成并下载 ZIP</button>
+            </div>
+            <p class="hint">单次最多 100 条 · 生成结果打包为 ZIP（含 README.txt 清单记录每条内容与失败原因）</p>
+        </section>
+
+        <section class="glass">
+            <p class="card-title">批量结果</p>
+            <div class="payload" id="batch-result">—</div>
+            <p class="hint">下载的 ZIP 内每个文件命名如 <code>001-url.png</code>，README.txt 记录每条二维码内容，<code>#</code> 开头为失败条目。</p>
         </section>
     </div>
 
@@ -473,6 +526,84 @@
             bindSeg('size-seg', 'size', function (v) { return parseInt(v, 10); });
             buildSwatches('fg-swatches', FGS, 'fg');
             buildSwatches('bg-swatches', BGS, 'bg');
+
+            // ============ Tab 切换（单条 / 批量） ============
+            document.querySelectorAll('.tab').forEach(function (tb) {
+                tb.addEventListener('click', function () {
+                    document.querySelectorAll('.tab').forEach(function (x) { x.classList.remove('active'); });
+                    tb.classList.add('active');
+                    var tab = tb.dataset.tab;
+                    $('single-panel').style.display = tab === 'single' ? '' : 'none';
+                    $('batch-panel').style.display = tab === 'batch' ? '' : 'none';
+                });
+            });
+
+            // ============ 批量生成 ============
+            var batchFmt = 'png';
+            $('batch-fmt-seg').addEventListener('click', function (e) {
+                var b = e.target.closest('button');
+                if (!b) return;
+                Array.prototype.forEach.call($('batch-fmt-seg').children, function (el) { el.classList.remove('active'); });
+                b.classList.add('active');
+                batchFmt = b.dataset.v;
+            });
+
+            // 解析批量输入：每行 第一列=类型，后续列按类型字段顺序（末列收尾剩余逗号）
+            function parseBatch(text) {
+                var lines = (text || '').split('\n').map(function (l) { return l.trim(); }).filter(Boolean);
+                if (!lines.length) return [];
+                var header = null;
+                var firstParts = lines[0].split(',');
+                if (firstParts[0].trim().toLowerCase() === 'type') {
+                    header = firstParts.map(function (s) { return s.trim(); });
+                    lines = lines.slice(1);
+                }
+                var items = [];
+                lines.forEach(function (line) {
+                    var parts = line.split(',');
+                    var type = parts[0].trim();
+                    var t = TYPES.filter(function (x) { return x.type === type; })[0];
+                    if (!t) return;  // 跳过未知类型
+                    var vals = parts.slice(1);
+                    var fieldDefs = header ? header.slice(1) : t.fields.map(function (f) { return f.key; });
+                    var fields = {};
+                    fieldDefs.forEach(function (k, i) {
+                        if (i < fieldDefs.length - 1) fields[k] = (vals[i] || '').trim();
+                        else fields[k] = vals.slice(i).join(',').trim();  // 末列保留逗号
+                    });
+                    items.push({ type: type, fields: fields });
+                });
+                return items;
+            }
+
+            $('batch-run').addEventListener('click', function () {
+                var items = parseBatch($('batch-input').value);
+                if (!items.length) { toast('没有可生成的条目（检查类型是否拼写正确）', true); return; }
+                var btn = $('batch-run');
+                btn.disabled = true; btn.textContent = '生成中…';
+                $('batch-result').textContent = '正在生成 ' + items.length + ' 条…';
+                fetch('/api/qr/batch', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ items: items, format: batchFmt })
+                }).then(function (r) {
+                    if (!r.ok) return r.json().then(function (d) { throw new Error(d.message || '生成失败'); });
+                    return r.blob();
+                }).then(function (blob) {
+                    var url = URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    a.href = url; a.download = 'zhiqr-batch.zip';
+                    document.body.appendChild(a); a.click(); a.remove();
+                    URL.revokeObjectURL(url);
+                    $('batch-result').textContent = '✅ 已生成 ZIP（' + items.length + ' 条），开始下载。';
+                    toast('批量生成完成，已下载 ZIP');
+                }).catch(function (e) {
+                    $('batch-result').textContent = '❌ ' + (e.message || '批量生成失败');
+                    toast(e.message || '批量生成失败', true);
+                }).finally(function () {
+                    btn.disabled = false; btn.textContent = '⚡ 批量生成并下载 ZIP';
+                });
+            });
 
             loadTypes().catch(function () { toast('加载类型失败', true); });
         })();
