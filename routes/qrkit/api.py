@@ -14,7 +14,7 @@ import zipfile
 import datetime
 from flask import Blueprint, request, jsonify, send_file
 from .types import registry, QRValidationError
-from .render import render_png, render_svg
+from .render import render_png, render_svg, render_pdf
 
 MAX_BATCH = 100
 
@@ -51,6 +51,10 @@ def _clean_options(options):
     except (TypeError, ValueError):
         sz = 0
     opts['size'] = sz if 64 <= sz <= 4096 else 0
+    logo = options.get('logo')
+    if isinstance(logo, str) and logo.strip():
+        opts['logo'] = logo.strip()
+    opts['transparent_bg'] = bool(options.get('transparent_bg'))
     return opts
 
 
@@ -61,7 +65,7 @@ def qr_types():
 
 
 def _make_one(qtype, fields, options, fmt):
-    """单条生成核心：校验 -> 规范编码 -> 渲染。返回 {payload, png|svg, fmt}；失败抛 QRValidationError。"""
+    """单条生成核心：校验 -> 规范编码 -> 渲染。返回 {payload, png|svg|pdf, fmt}；失败抛 QRValidationError。"""
     builder = registry.get(qtype)
     if not builder:
         raise QRValidationError(f'不支持的二维码类型: {qtype}')
@@ -71,6 +75,8 @@ def _make_one(qtype, fields, options, fmt):
         raise QRValidationError('二维码内容为空')
     if fmt == 'svg':
         return {'payload': payload, 'svg': render_svg(payload, options), 'fmt': 'svg'}
+    if fmt == 'pdf':
+        return {'payload': payload, 'pdf': render_pdf(payload, options), 'fmt': 'pdf'}
     return {'payload': payload, 'png': render_png(payload, options), 'fmt': 'png'}
 
 
@@ -82,7 +88,7 @@ def qr_generate():
     fields = data.get('fields') or {}
     options = _clean_options(data.get('options'))
     fmt = str(data.get('format') or 'png').lower()
-    if fmt not in ('png', 'svg'):
+    if fmt not in ('png', 'svg', 'pdf'):
         fmt = 'png'
     try:
         one = _make_one(qtype, fields, options, fmt)
@@ -91,6 +97,15 @@ def qr_generate():
 
     if one['fmt'] == 'svg':
         return jsonify({'format': 'svg', 'payload': one['payload'], 'svg': one['svg']})
+
+    if one['fmt'] == 'pdf':
+        b64 = base64.b64encode(one['pdf']).decode('ascii')
+        return jsonify({
+            'format': 'pdf',
+            'payload': one['payload'],
+            'pdf_base64': b64,
+            'data_uri': f'data:application/pdf;base64,{b64}',
+        })
 
     b64 = base64.b64encode(one['png']).decode('ascii')
     return jsonify({
@@ -111,7 +126,7 @@ def qr_batch():
     if len(items) > MAX_BATCH:
         return jsonify({'error': 'too_many', 'message': f'单次最多生成 {MAX_BATCH} 个'}), 400
     fmt = str(data.get('format') or 'png').lower()
-    if fmt not in ('png', 'svg'):
+    if fmt not in ('png', 'svg', 'pdf'):
         fmt = 'png'
     global_opts = _clean_options(data.get('options') or {})
 
@@ -132,7 +147,12 @@ def qr_batch():
             try:
                 one = _make_one(qtype, fields or {}, opt, fmt)
                 fname = f'{idx}-{qtype}.{fmt}'
-                z.writestr(fname, one['svg'] if fmt == 'svg' else one['png'])
+                if fmt == 'svg':
+                    z.writestr(fname, one['svg'])
+                elif fmt == 'pdf':
+                    z.writestr(fname, one['pdf'])
+                else:
+                    z.writestr(fname, one['png'])
                 ok += 1
                 readme.append(f'{fname}\t{one["payload"]}')
             except QRValidationError as e:

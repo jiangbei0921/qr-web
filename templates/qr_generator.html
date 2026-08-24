@@ -229,6 +229,15 @@
                     <button data-v="1200">大 1200</button>
                 </div>
             </div>
+
+            <div class="field">
+                <label>中心 Logo（可选，建议正方形 PNG）</label>
+                <input type="file" id="logo-input" accept="image/*" />
+            </div>
+            <div class="field" style="flex-direction:row;align-items:center;gap:10px">
+                <input type="checkbox" id="transparent-input" style="width:auto" />
+                <label for="transparent-input" style="margin:0">透明背景（仅 PNG 生效）</label>
+            </div>
         </section>
 
         <!-- 预览面板 -->
@@ -242,6 +251,7 @@
                 <div class="actions">
                     <button class="btn btn-primary" id="dl-png">↓ 下载 PNG</button>
                     <button class="btn btn-secondary" id="dl-svg">下载 SVG</button>
+                    <button class="btn btn-secondary" id="dl-pdf">下载 PDF</button>
                 </div>
                 <p class="hint" style="text-align:center">所有生成默认不落库（QuickGenerate），即开即用、零门槛。</p>
             </div>
@@ -267,6 +277,7 @@ email,hi@zhiqr.com,邮件标题,正文内容"></textarea>
             <div class="seg" id="batch-fmt-seg">
                 <button data-v="png" class="active">PNG（ZIP）</button>
                 <button data-v="svg">SVG（ZIP）</button>
+                <button data-v="pdf">PDF（ZIP）</button>
             </div>
 
             <div style="margin-top:18px">
@@ -292,7 +303,8 @@ email,hi@zhiqr.com,邮件标题,正文内容"></textarea>
             var TYPES = window.QR_TYPES || [];   // 自描述 schema（服务端直出，缺省时回退到 fetch）
             var current = null;      // 当前类型 key
             var state = {
-                fg: '#000000', bg: '#FFFFFF', ec: 'M', style: 'square', size: 600
+                fg: '#000000', bg: '#FFFFFF', ec: 'M', style: 'square', size: 600,
+                logo: null, transparent: false
             };
             var lastPng = null;      // 最近一次 PNG data_uri
             var lastPayload = '';
@@ -455,18 +467,24 @@ email,hi@zhiqr.com,邮件标题,正文内容"></textarea>
                 previewTimer = setTimeout(doGenerate, 350);
             }
 
+            function buildOpts() {
+                return {
+                    error_correction: state.ec,
+                    fill_color: state.fg,
+                    back_color: state.bg,
+                    style: state.style,
+                    size: state.size,
+                    logo: state.logo,
+                    transparent_bg: state.transparent
+                };
+            }
+
             function doGenerate() {
                 if (!current) return;
                 var body = {
                     type: current,
                     fields: collectFields(),
-                    options: {
-                        error_correction: state.ec,
-                        fill_color: state.fg,
-                        back_color: state.bg,
-                        style: state.style,
-                        size: state.size
-                    },
+                    options: buildOpts(),
                     format: 'png'
                 };
                 fetch('/api/qr/generate', {
@@ -502,8 +520,7 @@ email,hi@zhiqr.com,邮件标题,正文内容"></textarea>
                 if (!current) return;
                 var body = {
                     type: current, fields: collectFields(),
-                    options: { error_correction: state.ec, fill_color: state.fg, back_color: state.bg, style: state.style, size: state.size },
-                    format: 'svg'
+                    options: buildOpts(), format: 'svg'
                 };
                 fetch('/api/qr/generate', {
                     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
@@ -519,8 +536,36 @@ email,hi@zhiqr.com,邮件标题,正文内容"></textarea>
                 }).catch(function () { toast('SVG 生成失败', true); });
             }
 
+            function downloadPDF() {
+                if (!current) return;
+                var body = {
+                    type: current, fields: collectFields(),
+                    options: buildOpts(), format: 'pdf'
+                };
+                fetch('/api/qr/generate', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+                }).then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+                 .then(function (res) {
+                    if (!res.ok || !res.d.pdf_base64) { toast('PDF 生成失败', true); return; }
+                    var a = document.createElement('a');
+                    a.href = res.d.data_uri; a.download = 'zhiqr-' + current + '.pdf';
+                    document.body.appendChild(a); a.click(); a.remove();
+                }).catch(function () { toast('PDF 生成失败', true); });
+            }
+
             $('dl-png').addEventListener('click', downloadPNG);
             $('dl-svg').addEventListener('click', downloadSVG);
+            $('dl-pdf').addEventListener('click', downloadPDF);
+            $('logo-input').addEventListener('change', function (e) {
+                var file = e.target.files && e.target.files[0];
+                if (!file) { state.logo = null; preview(); return; }
+                var reader = new FileReader();
+                reader.onload = function () { state.logo = reader.result; preview(); };
+                reader.readAsDataURL(file);
+            });
+            $('transparent-input').addEventListener('change', function (e) {
+                state.transparent = e.target.checked; preview();
+            });
             bindSeg('ec-seg', 'ec');
             bindSeg('style-seg', 'style');
             bindSeg('size-seg', 'size', function (v) { return parseInt(v, 10); });

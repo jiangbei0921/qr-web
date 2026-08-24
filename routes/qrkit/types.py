@@ -6,6 +6,7 @@
 - 新架构：每个类型是一个 QRTypeBuilder 子类，自带 validate（校验+清洗）与 build_payload（含转义），
   新增类型 = 注册一个类，核心零改动。
 """
+import datetime
 import re
 from urllib.parse import quote
 
@@ -40,6 +41,28 @@ def escape_vcard(value):
             .replace(';', '\\;')
             .replace('\n', '\\n')
             .replace('\r', ''))
+
+
+def escape_ical(value):
+    """iCalendar(RFC 5545) 文本转义：反斜杠、逗号、分号、换行。"""
+    if value is None:
+        return ''
+    return (str(value)
+            .replace('\\', '\\\\')
+            .replace(',', '\\,')
+            .replace(';', '\\;')
+            .replace('\r\n', '\\n')
+            .replace('\n', '\\n')
+            .replace('\r', '\\n'))
+
+
+def _as_bool(v):
+    """把前端可能传来的字符串/布尔统一成 bool。"""
+    if isinstance(v, bool):
+        return v
+    if v is None:
+        return False
+    return str(v).strip().lower() in ('1', 'true', 'yes', 'y', 'on')
 
 
 # ---------- 类型基类 ----------
@@ -156,6 +179,7 @@ class WifiType(QRTypeBuilder):
         {'key': 'password', 'label': '密码', 'required': False},
         {'key': 'security', 'label': '加密方式', 'required': False, 'default': 'WPA',
          'options': ['WPA', 'WEP', 'nopass']},
+        {'key': 'hidden', 'label': '隐藏网络(不广播 SSID)', 'type': 'bool', 'default': False},
     ]
 
     def build_payload(self, f):
@@ -168,7 +192,7 @@ class WifiType(QRTypeBuilder):
         parts = [f'T:{security}', f'S:{ssid}']
         if security != 'NOPASS':
             parts.append(f"P:{escape_wifi(f.get('password') or '')}")
-        parts.append('H:false')
+        parts.append(f'H:{str(_as_bool(f.get('hidden'))).lower()}')
         return 'WIFI:' + ';'.join(parts) + ';;'
 
 
@@ -223,6 +247,98 @@ class GeoType(QRTypeBuilder):
         return f'geo:{lat},{lng}'
 
 
+class EventType(QRTypeBuilder):
+    type_key = 'event'
+    label = '日历事件'
+    fields = [
+        {'key': 'summary', 'label': '事件标题', 'required': True, 'placeholder': '团队周会'},
+        {'key': 'start', 'label': '开始时间', 'required': True, 'placeholder': '2026-09-01 14:30'},
+        {'key': 'end', 'label': '结束时间', 'required': False, 'placeholder': '2026-09-01 15:30'},
+        {'key': 'location', 'label': '地点', 'required': False},
+        {'key': 'description', 'label': '描述', 'required': False},
+    ]
+    _DT_FORMATS = (
+        '%Y-%m-%d %H:%M:%S', '%Y-%m-%d %H:%M', '%Y-%m-%dT%H:%M:%S',
+        '%Y-%m-%dT%H:%M', '%Y-%m-%d',
+    )
+
+    @classmethod
+    def _parse_dt(cls, raw):
+        raw = (raw or '').strip()
+        if not raw:
+            return None
+        for fmt in cls._DT_FORMATS:
+            try:
+                return datetime.datetime.strptime(raw, fmt)
+            except ValueError:
+                continue
+        raise QRValidationError('时间格式应为 YYYY-MM-DD 或 YYYY-MM-DD HH:MM')
+
+    @classmethod
+    def _ical_dt(cls, dt):
+        if dt.hour == 0 and dt.minute == 0 and dt.second == 0:
+            return dt.strftime('%Y%m%d')
+        return dt.strftime('%Y%m%dT%H%M%S')
+
+    def build_payload(self, f):
+        summary = (f.get('summary') or '').strip()
+        if not summary:
+            raise QRValidationError('事件标题不能为空')
+        start = self._parse_dt(f.get('start'))
+        if start is None:
+            raise QRValidationError('开始时间不能为空')
+        end = self._parse_dt(f.get('end')) if f.get('end') else None
+        if end is not None and end < start:
+            raise QRValidationError('结束时间不能早于开始时间')
+        now = datetime.datetime.now()
+        uid = f'zhiqr-{now.strftime("%Y%m%d%H%M%S")}-{abs(hash(summary)) % 100000}@zhiqr'
+        lines = [
+            'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//ZhiQR//ZH',
+            'CALSCALE:GREGORIAN', 'BEGIN:VEVENT',
+            f'UID:{uid}', f'DTSTAMP:{self._ical_dt(now)}',
+            f'DTSTART:{self._ical_dt(start)}',
+        ]
+        if end is not None:
+            lines.append(f'DTEND:{self._ical_dt(end)}')
+        lines.append(f'SUMMARY:{escape_ical(summary)}')
+        if f.get('location'):
+            lines.append(f"LOCATION:{escape_ical(f['location'])}")
+        if f.get('description'):
+            lines.append(f"DESCRIPTION:{escape_ical(f['description'])}")
+        lines += ['END:VEVENT', 'END:VCALENDAR']
+        return '\r\n'.join(lines)
+
+
+class AppType(QRTypeBuilder):
+    type_key = 'app'
+    label = '应用下载'
+    fields = [
+        {'key': 'platform', 'label': '平台', 'required': True, 'default': 'ios',
+         'options': ['ios', 'android', 'url']},
+        {'key': 'identifier', 'label': 'App ID / 包名 / 链接', 'required': True,
+         'placeholder': 'ios 填 id、android 填包名、url 填直链'},
+    ]
+    _URL_RE = re.compile(r'^[a-zA-Z][a-zA-Z0-9+.\-]*://')
+
+    def build_payload(self, f):
+        platform = str(f.get('platform') or 'ios').strip().lower()
+        ident = (f.get('identifier') or '').strip()
+        if not ident:
+            raise QRValidationError('标识符不能为空')
+        if platform == 'ios':
+            if not ident.isdigit():
+                raise QRValidationError('iOS 应填写纯数字 App ID')
+            return f'https://apps.apple.com/app/id{ident}'
+        if platform == 'android':
+            if not re.match(r'^[a-zA-Z0-9_.\-]+$', ident):
+                raise QRValidationError('Android 应填写合法包名(如 com.xxx.app)')
+            return f'https://play.google.com/store/apps/details?id={ident}'
+        # url：直链，容错补 scheme
+        if not self._URL_RE.match(ident) and not ident.startswith('//'):
+            ident = 'https://' + ident
+        return ident
+
+
 # ---------- 注册表 ----------
 class QRTypeRegistry:
     """类型注册表：新增类型只需 register 一个子类，核心逻辑零改动。"""
@@ -250,5 +366,5 @@ class QRTypeRegistry:
 
 
 registry = QRTypeRegistry()
-for _cls in (UrlType, TextType, EmailType, VCardType, WifiType, SmsType, TelType, GeoType):
+for _cls in (UrlType, TextType, EmailType, VCardType, WifiType, SmsType, TelType, GeoType, EventType, AppType):
     registry.register(_cls)
