@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
     <title data-i18n="meta.title">ZhiQR - 二维码生成器</title>
     <meta name="initial-locale" content="{{ initial_locale|default('zh') }}">
     <script>window.__INITIAL_LOCALE__=document.querySelector('meta[name="initial-locale"]').getAttribute('content');</script>
@@ -10,10 +11,12 @@
     <link rel="stylesheet" href="/static/style.css?v=19">
 <script>
 (function(){
-  var t = localStorage.getItem('theme') || 'light';
+  var t = localStorage.getItem('theme') || 'dark';
   document.documentElement.setAttribute('data-theme', t);
 })();
 </script>
+
+    <script src="/static/csrf.js"></script>
 </head>
 <body>
     <div class="container">
@@ -80,8 +83,10 @@
             </div>
 
             <div class="bottom-bar">
-                <button class="btn-icon" title="帮助" data-i18n="nav.help">帮助</button>
-                <button class="btn-icon" title="设置" data-i18n="nav.settings">设置</button>
+                <button class="bottom-nav-item top-nav-item" data-tab="workspace" data-i18n="nav.workspace">首页</button>
+                <button class="bottom-nav-item top-nav-item" data-tab="generator" data-i18n="nav.generator">创建</button>
+                <button class="bottom-nav-item top-nav-item" data-tab="templates" data-i18n="nav.templates">模板</button>
+                <button class="bottom-nav-item top-nav-item" data-tab="history" data-i18n="nav.history">历史</button>
             </div>
 
         <div class="page-header">

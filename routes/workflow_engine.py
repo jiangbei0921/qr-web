@@ -505,7 +505,7 @@ def workflow_trigger_schedule_poll():
                 c2 = conn.cursor()
                 c2.execute('''SELECT id, title, created_at FROM workorders
                             WHERE org_id=? AND status='open'
-                            AND (julianday(CURRENT_TIMESTAMP) - julianday(created_at)) * 24 > ?'''
+                            AND (julianday(CURRENT_TIMESTAMP) - julianday(created_at)) * 24 > ?''',
                          (wf['org_id'], overdue_hours))
                 for wo in c2.fetchall():
                     event = {

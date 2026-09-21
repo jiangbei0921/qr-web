@@ -5,33 +5,33 @@
 
 :root,
 [data-theme="light"] {
-    --home-primary: #C9A84C;
-    --home-primary-hover: #D4B35A;
+    --home-primary: var(--ds-accent);
+    --home-primary-hover: var(--ds-accent-hover);
     --home-primary-glow: rgba(201, 168, 76, 0.25);
-    --home-gradient: linear-gradient(135deg, #C9A84C 0%, #D4B35A 40%, #B8943A 100%);
-    --home-bg: #080808;
-    --home-bg-secondary: #0E0E0E;
-    --home-surface: #141414;
-    --home-surface-hover: #1A1A1A;
-    --home-surface-elevated: #1C1C1C;
-    --home-text: #F0F0F0;
-    --home-text-secondary: #A0A0A0;
-    --home-text-muted: #6A6A6A;
-    --home-border: rgba(255, 255, 255, 0.06);
-    --home-border-light: rgba(255, 255, 255, 0.04);
+    --home-gradient: linear-gradient(135deg, var(--ds-accent) 0%, var(--ds-accent-hover) 40%, #8B6914 100%);
+    --home-bg: #F7F5F1;
+    --home-bg-secondary: #EFECE6;
+    --home-surface: #FFFFFF;
+    --home-surface-hover: #F0EDE8;
+    --home-surface-elevated: #FAF8F3;
+    --home-text: #2B2722;
+    --home-text-secondary: #5C564C;
+    --home-text-muted: #8A8276;
+    --home-border: rgba(0, 0, 0, 0.08);
+    --home-border-light: rgba(0, 0, 0, 0.04);
     --home-radius: 16px;
     --home-radius-sm: 12px;
     --home-radius-full: 999px;
-    --home-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
-    --home-shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.5);
+    --home-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    --home-shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.12);
     --home-transition: 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
 [data-theme="dark"] {
-    --home-primary: #C9A84C;
-    --home-primary-hover: #D4B35A;
+    --home-primary: var(--ds-accent);
+    --home-primary-hover: var(--ds-accent-hover);
     --home-primary-glow: rgba(201, 168, 76, 0.25);
-    --home-gradient: linear-gradient(135deg, #C9A84C 0%, #D4B35A 40%, #B8943A 100%);
+    --home-gradient: linear-gradient(135deg, var(--ds-accent) 0%, var(--ds-accent-hover) 40%, #8B6914 100%);
     --home-bg: #080808;
     --home-bg-secondary: #0E0E0E;
     --home-surface: #141414;
@@ -1094,4 +1094,17 @@ html, body {
 
 .home-auth-switch a:hover {
     color: var(--home-primary-hover);
+}
+/* ============================================
+   Entrance animation (premium)
+   ============================================ */
+@keyframes homeFade {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.home-hero { animation: homeFade .6s cubic-bezier(0.25, 0.1, 0.25, 1) both; }
+body { animation: homeFade .5s ease both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .home-hero, body { animation: none; }
 }

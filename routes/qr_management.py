@@ -1,14 +1,12 @@
 """
-qrcode.py - 二维码管理模块
+qr_management.py - 二维码管理模块（生成能力已迁移至 routes/qrkit 新内核）
 这是系统的核心模块，负责二维码的生成、管理和扫码跳转。
 
 主要功能：
-1. 二维码生成：支持文本、网址、WiFi、名片、邮箱等多种内容类型
-2. 活码（动态链接）：创建可修改目标的二维码，支持扫码统计
-3. 批量生成：通过CSV文件批量创建二维码
-4. 扫码跳转：扫二维码后自动跳转到目标URL，并记录扫码数据
-5. 文件上传：上传Logo等图片资源
-6. 二维码管理：列表、详情、编辑、删除、归档、标签
+1. 活码（动态链接）：创建可修改目标的二维码，支持扫码统计
+2. 扫码跳转：扫二维码后自动跳转到目标URL，并记录扫码数据
+3. 二维码管理：列表、详情、编辑、删除、归档、标签、批量导出
+4. （静态/批量生成已迁移至 routes/qrkit 新内核）
 
 关键概念：
 - 活码（Dynamic Link）：二维码指向一个短链接，可以通过修改短链接的目标来改变扫码结果
@@ -28,8 +26,8 @@ from flask import Blueprint, request, jsonify, session, redirect
 from routes.shared import (
     get_db, login_required, require_permission,
     _t, log_action, logger, generate_short_code,
-    Config, format_qrcode_payload, generate_qrcode,
-    image_to_base64, generate_svg, validate_file_extension,
+    Config, generate_qrcode,
+    image_to_base64,
     safe_filename, check_quota, update_org_quota,
     parse_user_agent, save_version, workflow_trigger_after_scan,
     workflow_trigger_after_qrcode_create,
@@ -37,7 +35,7 @@ from routes.shared import (
     validate_transition, UPLOAD_FOLDER, DATABASE
 )
 
-qrcode_bp = Blueprint('qrcode', __name__)
+qr_management_bp = Blueprint('qrcode', __name__)
 
 
 def _get_qrcode_by_id_cursor(c, qrcode_id, org_id, check_deleted=True):
@@ -95,191 +93,7 @@ def _get_scan_stats(c, qrcode_id):
     }
 
 
-@qrcode_bp.route('/api/generate', methods=['POST'])
-@login_required
-def api_generate():
-    """生成二维码图片（静态码）
-
-    这是最基础的二维码生成接口。
-    用户输入内容和类型（文本/网址/名片等），系统返回一张二维码图片。
-    
-    工作原理：
-    1. 接收内容和类型参数
-    2. 调用 format_qrcode_payload 将内容格式化为标准编码格式
-       （例如WiFi类型会转成 WIFI:T:WPA;S:... 格式）
-    3. 调用 generate_qrcode 生成二维码图片
-    4. 将图片转为 Base64 编码，方便前端直接嵌入显示
-    """
-    try:
-        data = request.get_json(silent=True) or {}
-        qtype = data.get('type', 'text')  # 二维码类型：text/url/wifi/vcard/email等
-        content = data.get('content', '')  # 二维码内容
-        config = data.get('config', {}) or {}  # 样式配置（颜色、大小等）
-
-        # 将内容格式化为各类型对应的标准编码格式
-        payload = format_qrcode_payload(content, qtype)
-
-        if not payload:
-            return jsonify({'error': _t('error.invalidContent')}), 400
-
-        # 调用二维码生成库，生成图片
-        img = generate_qrcode(payload, config)
-        # 将图片转为Base64编码字符串，前端可直接用 <img src="data:image/png;base64,..."> 显示
-        img_base64 = image_to_base64(img)
-
-        return jsonify({
-            'success': True,
-            'qrcode': f'data:image/png;base64,{img_base64}',
-            'timestamp': datetime.now(timezone.utc).isoformat()
-        })
-    except Exception as e:
-        logger.error(f"二维码生成失败: {e}", exc_info=True)
-        return jsonify({'error': _t('error.generateFailedRetry')}), 500
-
-
-@qrcode_bp.route('/api/export_svg', methods=['POST'])
-@login_required
-def api_export_svg():
-    try:
-        data = request.get_json(silent=True) or {}
-        qtype = data.get('type', 'text')
-        content = data.get('content', '')
-        config = data.get('config', {}) or {}
-        payload = format_qrcode_payload(content, qtype)
-
-        if not payload:
-            return jsonify({'error': _t('error.invalidContent')}), 400
-
-        svg = generate_svg(payload, config)
-        return jsonify({'success': True, 'svg': svg})
-    except Exception as e:
-        logger.error(f"SVG导出失败: {e}", exc_info=True)
-        return jsonify({'error': _t('error.exportFailedRetry')}), 500
-
-
-@qrcode_bp.route('/api/qrcode/upload', methods=['POST'])
-@login_required
-def api_upload():
-    """文件上传，含扩展名白名单校验和路径穿越防护"""
-    try:
-        file = request.files.get('file')
-        if not file or not file.filename:
-            return jsonify({'error': _t('error.noFileSelected')}), 400
-
-        if not validate_file_extension(file.filename):
-            return jsonify({'error': _t('error.unsupportedFileType')}), 400
-
-        original_filename = file.filename
-        ext = os.path.splitext(safe_filename(original_filename))[1].lower() or '.bin'
-        fid = str(uuid.uuid4())[:12]
-        fname = f'{fid}{ext}'
-        file_path = os.path.join(UPLOAD_FOLDER, fname)
-
-        org_id = session.get('org_id')
-        passed, limit, used, msg = check_quota(org_id, 'max_storage_mb')
-        if not passed:
-            return jsonify({'error': msg, 'quota_key': 'max_storage_mb', 'limit': limit, 'used': used}), 403
-
-        file.save(file_path)
-        file_size = os.path.getsize(file_path)
-        file_type_ext = ext.lstrip('.')
-        user_id = session.get('user_id')
-        with get_db() as conn:
-            c = conn.cursor()
-            c.execute('''INSERT INTO files
-                (org_id, name, original_name, path, file_type, size, created_by)
-                VALUES (?,?,?,?,?,?,?)''',
-                (org_id, fname, original_filename, file_path, file_type_ext, file_size, user_id))
-            conn.commit()
-
-        url = f'{Config.BASE_URL}/api/files/{fname}'
-        return jsonify({'success': True, 'url': url})
-    except Exception as e:
-        logger.error(f"文件上传失败: {e}", exc_info=True)
-        return jsonify({'error': _t('error.uploadFailed')}), 500
-
-
-# @qrcode_bp.route('/api/files/<fname>')
-# def api_serve_file(fname):
-#     """提供文件下载/预览，使用 secure_filename 防路径穿越"""
-#     from werkzeug.utils import secure_filename
-#     safe_fname = secure_filename(fname)
-#     filepath = os.path.join(UPLOAD_FOLDER, safe_fname)
-#     if not os.path.exists(filepath):
-#         return jsonify({'error': _t('error.fileNotFound')}), 404
-#     ext = os.path.splitext(safe_fname)[1].lower()
-#     inline_exts = {'.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg', '.mp4', '.mp3', '.wav', '.pdf'}
-#     as_attachment = ext not in inline_exts
-#     return send_from_directory(UPLOAD_FOLDER, safe_fname, as_attachment=as_attachment)
-
-
-@qrcode_bp.route('/api/generate_batch', methods=['POST'])
-@login_required
-def api_generate_batch():
-    try:
-        uploaded_file = request.files.get('file')
-        if not uploaded_file:
-            return jsonify({'error': _t('error.uploadCsv')}), 400
-
-        raw_config = request.form.get('config', '{}')
-        config = json.loads(raw_config or '{}')
-        style_config = json.loads(request.form.get('style_config', '{}') or '{}')
-        data = uploaded_file.read().decode('utf-8', errors='ignore')
-        reader = csv.reader(data.splitlines())
-
-        qrcodes = []
-        org_id = session.get('org_id')
-        user_id = session.get('user_id')
-        for index, row in enumerate(reader, start=1):
-            if not row or not row[0].strip():
-                continue
-            content = row[0].strip()
-            title = row[1].strip() if len(row) > 1 and row[1].strip() else f'qrcode_{index}'
-            
-            short_code = generate_short_code()
-            qr_url = f"{Config.BASE_URL}/s/{short_code}"
-            
-            img = generate_qrcode(qr_url, style_config)
-            
-            with get_db() as conn:
-                c = conn.cursor()
-                c.execute('''INSERT INTO dynamic_links
-                            (short_code, org_id, title, target_url, target_type, created_by)
-                            VALUES (?,?,?,?,?,?)''',
-                         (short_code, org_id, title, content, 'url', user_id))
-                link_id = c.lastrowid
-                
-                c.execute('''INSERT INTO qrcodes
-                            (uuid_short, org_id, title, content_json, style_config, creator_id, dynamic_link_id)
-                            VALUES (?,?,?,?,?,?,?)''',
-                         (short_code, org_id, title,
-                          json.dumps({'url': qr_url}, ensure_ascii=False),
-                          json.dumps(style_config, ensure_ascii=False),
-                          user_id, link_id))
-                qrcode_id = c.lastrowid
-                
-                c.execute('UPDATE dynamic_links SET qrcode_id=? WHERE id=?', (qrcode_id, link_id))
-                conn.commit()
-            
-            qrcodes.append({
-                'name': title,
-                'qrcode': f'data:image/png;base64,{image_to_base64(img)}',
-                'short_code': short_code,
-                'qr_url': qr_url,
-                'qrcode_id': qrcode_id,
-                'dynamic_link_id': link_id
-            })
-
-        if not qrcodes:
-            return jsonify({'error': _t('error.csvNoContent')}), 400
-
-        return jsonify({'success': True, 'count': len(qrcodes), 'qrcodes': qrcodes})
-    except Exception as e:
-        logger.error(f"批量生成失败: {e}", exc_info=True)
-        return jsonify({'error': _t('error.batchGenerateFailed')}), 500
-
-
-@qrcode_bp.route('/s/<short_code>')
+@qr_management_bp.route('/s/<short_code>')
 def dynamic_redirect(short_code):
     """活码扫码跳转路由（无需登录，任何人都可以扫码访问）
     
@@ -423,7 +237,7 @@ def dynamic_redirect(short_code):
         return jsonify({'error': _t('error.serverError', '服务器错误，请稍后重试')}), 500
 
 
-@qrcode_bp.route('/api/dynamic-links/create', methods=['POST'])
+@qr_management_bp.route('/api/dynamic-links/create', methods=['POST'])
 @login_required
 def create_dynamic_link():
     """创建活码（动态链接二维码）
@@ -515,7 +329,7 @@ def create_dynamic_link():
         return jsonify({'error': _t('error.createRetryFailed')}), 500
 
 
-@qrcode_bp.route('/api/dynamic-links/<int:link_id>', methods=['PUT'])
+@qr_management_bp.route('/api/dynamic-links/<int:link_id>', methods=['PUT'])
 @login_required
 def update_dynamic_link(link_id):
     """修改活码目标"""
@@ -549,7 +363,7 @@ def update_dynamic_link(link_id):
         return jsonify({'error': _t('error.modifyFailed')}), 500
 
 
-@qrcode_bp.route('/api/dynamic-links/<int:link_id>/toggle', methods=['POST'])
+@qr_management_bp.route('/api/dynamic-links/<int:link_id>/toggle', methods=['POST'])
 @login_required
 def toggle_dynamic_link(link_id):
     """启停活码"""
@@ -574,7 +388,7 @@ def toggle_dynamic_link(link_id):
         return jsonify({'error': _t('error.operationFailed')}), 500
 
 
-@qrcode_bp.route('/api/dynamic-links/<int:link_id>', methods=['DELETE'])
+@qr_management_bp.route('/api/dynamic-links/<int:link_id>', methods=['DELETE'])
 @login_required
 def delete_dynamic_link(link_id):
     """删除活码（软删除）"""
@@ -600,7 +414,7 @@ def delete_dynamic_link(link_id):
         return jsonify({'error': _t('error.deleteFailed', '删除失败')}), 500
 
 
-@qrcode_bp.route('/api/dynamic-links/list', methods=['GET'])
+@qr_management_bp.route('/api/dynamic-links/list', methods=['GET'])
 @login_required
 def list_dynamic_links():
     """活码列表"""
@@ -658,7 +472,7 @@ def list_dynamic_links():
         return jsonify({'error': _t('error.queryFailed', '查询失败')}), 500
 
 
-@qrcode_bp.route('/api/dynamic-links/<int:link_id>', methods=['GET'])
+@qr_management_bp.route('/api/dynamic-links/<int:link_id>', methods=['GET'])
 @login_required
 def get_dynamic_link(link_id):
     """活码详情"""
@@ -693,7 +507,7 @@ def get_dynamic_link(link_id):
         return jsonify({'error': _t('error.queryFailed', '查询失败')}), 500
 
 
-@qrcode_bp.route('/api/qrcodes/list', methods=['GET'])
+@qr_management_bp.route('/api/qrcodes/list', methods=['GET'])
 @login_required
 def list_qrcodes_enhanced():
     """二维码列表（增强版）"""
@@ -756,7 +570,7 @@ def list_qrcodes_enhanced():
         return jsonify({'error': _t('error.queryFailed', '查询失败')}), 500
 
 
-@qrcode_bp.route('/api/qrcodes/<int:qrcode_id>/detail', methods=['GET'])
+@qr_management_bp.route('/api/qrcodes/<int:qrcode_id>/detail', methods=['GET'])
 @login_required
 def get_qrcode_detail(qrcode_id):
     """二维码详情"""
@@ -810,7 +624,7 @@ def get_qrcode_detail(qrcode_id):
         return jsonify({'error': _t('error.queryFailed', '查询失败')}), 500
 
 
-@qrcode_bp.route('/api/qrcodes/<int:qrcode_id>/toggle', methods=['POST'])
+@qr_management_bp.route('/api/qrcodes/<int:qrcode_id>/toggle', methods=['POST'])
 @login_required
 def toggle_qrcode(qrcode_id):
     """停用/启用二维码"""
@@ -835,7 +649,7 @@ def toggle_qrcode(qrcode_id):
         return jsonify({'error': _t('error.operationFailed', '操作失败')}), 500
 
 
-@qrcode_bp.route('/api/qrcodes/<int:qrcode_id>/archive', methods=['POST'])
+@qr_management_bp.route('/api/qrcodes/<int:qrcode_id>/archive', methods=['POST'])
 @login_required
 def archive_qrcode(qrcode_id):
     """归档二维码"""
@@ -858,7 +672,7 @@ def archive_qrcode(qrcode_id):
         return jsonify({'error': _t('error.archiveFailed', '归档失败')}), 500
 
 
-@qrcode_bp.route('/api/qrcodes/<int:qrcode_id>', methods=['PUT'])
+@qr_management_bp.route('/api/qrcodes/<int:qrcode_id>', methods=['PUT'])
 @login_required
 def update_qrcode(qrcode_id):
     """更新二维码（含版本快照保存）"""
@@ -933,7 +747,7 @@ def update_qrcode(qrcode_id):
         return jsonify({'error': _t('error.updateFailed', '更新失败')}), 500
 
 
-@qrcode_bp.route('/api/qrcodes/<int:qrcode_id>', methods=['DELETE'])
+@qr_management_bp.route('/api/qrcodes/<int:qrcode_id>', methods=['DELETE'])
 @login_required
 def delete_qrcode(qrcode_id):
     """删除二维码（软删除→回收站）"""
@@ -961,7 +775,7 @@ def delete_qrcode(qrcode_id):
         return jsonify({'error': _t('error.deleteFailed', '删除失败')}), 500
 
 
-@qrcode_bp.route('/api/qrcodes/<int:qrcode_id>/stats', methods=['GET'])
+@qr_management_bp.route('/api/qrcodes/<int:qrcode_id>/stats', methods=['GET'])
 @login_required
 def get_qrcode_stats(qrcode_id):
     """单个二维码扫码统计"""
@@ -1013,7 +827,7 @@ def get_qrcode_stats(qrcode_id):
         return jsonify({'error': _t('error.queryFailed', '查询失败')}), 500
 
 
-@qrcode_bp.route('/api/qrcodes/<int:qrcode_id>/tags', methods=['POST'])
+@qr_management_bp.route('/api/qrcodes/<int:qrcode_id>/tags', methods=['POST'])
 @login_required
 def set_qrcode_tags(qrcode_id):
     """给二维码设置标签"""
@@ -1040,7 +854,7 @@ def set_qrcode_tags(qrcode_id):
         return jsonify({'error': _t('error.setFailed', '设置失败')}), 500
 
 
-@qrcode_bp.route('/api/qrcodes/<int:qrcode_id>/tags', methods=['GET'])
+@qr_management_bp.route('/api/qrcodes/<int:qrcode_id>/tags', methods=['GET'])
 @login_required
 def get_qrcode_tags(qrcode_id):
     """查询二维码的标签"""
@@ -1064,7 +878,7 @@ def get_qrcode_tags(qrcode_id):
         return jsonify({'error': _t('error.queryFailed', '查询失败')}), 500
 
 
-@qrcode_bp.route('/api/qrcodes/batch-export', methods=['POST'])
+@qr_management_bp.route('/api/qrcodes/batch-export', methods=['POST'])
 @login_required
 def batch_export_qrcodes():
     """批量导出二维码"""
@@ -1100,7 +914,7 @@ def batch_export_qrcodes():
         return jsonify({'error': _t('error.exportFailed')}), 500
 
 
-@qrcode_bp.route('/api/qrcodes/lifecycle/list', methods=['GET'])
+@qr_management_bp.route('/api/qrcodes/lifecycle/list', methods=['GET'])
 @require_permission('qrcode:view')
 def lifecycle_list():
     """获取二维码生命周期列表（支持状态筛选）"""
@@ -1156,7 +970,7 @@ def lifecycle_list():
         return jsonify({'error': _t('error.queryFailed', '查询失败')}), 500
 
 
-@qrcode_bp.route('/api/qrcodes/lifecycle/<int:qrcode_id>/timeline', methods=['GET'])
+@qr_management_bp.route('/api/qrcodes/lifecycle/<int:qrcode_id>/timeline', methods=['GET'])
 @require_permission('qrcode:view')
 def lifecycle_timeline(qrcode_id):
     """获取单个二维码的生命周期时间轴"""
@@ -1257,7 +1071,7 @@ def lifecycle_timeline(qrcode_id):
         return jsonify({'error': _t('error.queryFailed')}), 500
 
 
-@qrcode_bp.route('/api/qrcodes/lifecycle/transition', methods=['POST'])
+@qr_management_bp.route('/api/qrcodes/lifecycle/transition', methods=['POST'])
 @require_permission('qrcode:edit')
 def lifecycle_transition():
     """执行状态流转"""
@@ -1347,7 +1161,7 @@ def lifecycle_transition():
         return jsonify({'error': _t('error.statusTransitionFailed', '状态流转失败')}), 500
 
 
-@qrcode_bp.route('/api/qrcodes/<int:qrcode_id>/preview-data', methods=['GET'])
+@qr_management_bp.route('/api/qrcodes/<int:qrcode_id>/preview-data', methods=['GET'])
 @login_required
 def get_qrcode_preview_data(qrcode_id):
     """获取二维码预览数据"""
@@ -1402,7 +1216,7 @@ def get_qrcode_preview_data(qrcode_id):
         return jsonify({'error': _t('error.queryFailed', '查询失败')}), 500
 
 
-@qrcode_bp.route('/api/qrcodes/<int:qrcode_id>/preview-preferences', methods=['GET'])
+@qr_management_bp.route('/api/qrcodes/<int:qrcode_id>/preview-preferences', methods=['GET'])
 @login_required
 def get_preview_preferences(qrcode_id):
     """获取用户预览偏好"""
@@ -1441,7 +1255,7 @@ def get_preview_preferences(qrcode_id):
         return jsonify({'error': _t('error.queryFailed', '查询失败')}), 500
 
 
-@qrcode_bp.route('/api/qrcodes/<int:qrcode_id>/preview-preferences', methods=['PUT'])
+@qr_management_bp.route('/api/qrcodes/<int:qrcode_id>/preview-preferences', methods=['PUT'])
 @login_required
 def update_preview_preferences(qrcode_id):
     """更新用户预览偏好"""
@@ -1516,7 +1330,7 @@ def update_preview_preferences(qrcode_id):
         return jsonify({'error': _t('error.updateFailed', '更新失败')}), 500
 
 
-@qrcode_bp.route('/api/preview/devices', methods=['GET'])
+@qr_management_bp.route('/api/preview/devices', methods=['GET'])
 @login_required
 def get_preview_devices():
     """获取可用设备列表"""

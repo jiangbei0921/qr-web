@@ -134,7 +134,10 @@ def auth_register():
                 conn.commit()
                 
                 # 注册成功后，直接建立会话（用户不用再登录一次）
+                _csrf = session.get("_csrf_token")
                 session.clear()  # 清除可能存在的旧会话
+                if _csrf:
+                    session["_csrf_token"] = _csrf  # 保留 CSRF token，避免登录后旧页面 POST 被 403
                 session['user_id'] = user_id        # 用户ID
                 session['org_id'] = org_id          # 组织ID
                 session['username'] = username      # 用户名
@@ -221,7 +224,10 @@ def auth_login():
             return jsonify({'error': _t('error.accountDisabled', '账户已被停用，请联系管理员')}), 403
         
         # 登录成功，建立会话
+        _csrf = session.get("_csrf_token")
         session.clear()  # 清除旧会话，防止会话固定攻击
+        if _csrf:
+            session["_csrf_token"] = _csrf  # 保留 CSRF token，避免登录后旧页面 POST 被 403
         session['user_id'] = user['id']              # 用户ID
         session['org_id'] = user['org_id']            # 组织ID
         session['username'] = user['username']        # 用户名

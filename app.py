@@ -16,6 +16,7 @@
 # ============ 导入必要的库 ============
 import os
 import socket
+import secrets
 
 import flask
 
@@ -51,7 +52,7 @@ else:
 # 蓝图是 Flask 中组织路由的方式，每个功能模块注册一个蓝图
 # 这样做的好处：代码按功能分离，易于维护和扩展
 from routes.auth import auth_bp               # 认证模块：注册、登录、登出
-from routes.qrcode import qrcode_bp           # 二维码模块：生成、扫描、活码管理
+from routes.qr_management import qr_management_bp  # 二维码管理模块：活码/静态码管理、扫码跳转（生成已迁至 qrkit 内核）
 from routes.form import form_bp               # 表单模块：创建、提交、数据收集
 from routes.workorder import workorder_bp     # 工单模块：创建、分配、处理工单
 from routes.asset import asset_bp             # 资产模块：资产管理、绑定二维码
@@ -64,12 +65,13 @@ from routes.workspace import workspace_bp     # 工作台：仪表盘、统一�
 from routes.open_api import open_api_bp       # 开放平台：API Key、JWT、OAuth2
 from routes.file_mgr import file_bp           # 文件管理：上传、下载、文件库
 from routes.admin import admin_bp             # 管理后台：用户管理、审计日志
+from routes.qrkit.api import qrkit_bp          # 二维码内核：新一代生成引擎(P0)
 
 # ============ 注册所有蓝图到 Flask 应用 ============
 # 将每个功能模块的蓝图注册到应用中，使其路由生效
-for bp in [auth_bp, qrcode_bp, form_bp, workorder_bp, asset_bp, inspection_bp,
+for bp in [auth_bp, qr_management_bp, form_bp, workorder_bp, asset_bp, inspection_bp,
            department_bp, notification_bp, workflow_bp, subscription_bp,
-           workspace_bp, open_api_bp, file_bp, admin_bp]:
+           workspace_bp, open_api_bp, file_bp, admin_bp, qrkit_bp]:
     app.register_blueprint(bp)
 
 # ============ 上下文处理器：注入国际化信息到所有模板 ============
@@ -80,6 +82,41 @@ def inject_i18n_context():
     """
     locale = _normalize_locale(session.get('preferred_lang') or request.args.get('lang') or _i18n_get_locale())
     return {'initial_locale': locale}
+
+# ============ CSRF 防护 ============
+@app.context_processor
+def inject_csrf_token():
+    """生成（每个会话仅一次）并向所有模板暴露 CSRF token。"""
+    token = session.get('_csrf_token')
+    if not token:
+        token = secrets.token_hex(32)
+        session['_csrf_token'] = token
+    return {'csrf_token': token}
+
+@app.before_request
+def csrf_protect():
+    """对状态变更的请求校验 CSRF token。
+
+    豁免：
+    - 安全方法（GET / HEAD / OPTIONS / TRACE）
+    - 使用 Bearer JWT 或 X-API-Key 的程序化 API 客户端（开放平台）
+    """
+    if request.method in ('GET', 'HEAD', 'OPTIONS', 'TRACE'):
+        return
+    # 程序化客户端通过 API Key / JWT 鉴权，不走会话 CSRF
+    auth = request.headers.get('Authorization', '')
+    if auth.startswith('Bearer ') or request.headers.get('X-API-Key'):
+        return
+    # 公开二维码生成内核：不落库、无需登录，且可能在预览沙箱中运行，豁免 CSRF
+    if request.path.startswith('/api/qr/'):
+        return
+    # token 优先取请求头（fetch），其次取表单字段（传统表单 POST）
+    token = request.headers.get('X-CSRFToken') or request.headers.get('X-CSRF-Token')
+    ct = request.content_type or ''
+    if not token and ('form-urlencoded' in ct or 'multipart/form-data' in ct):
+        token = request.form.get('csrf_token')
+    if not token or token != session.get('_csrf_token'):
+        return jsonify({'error': _safe_t('error.csrf', '请求校验失败，请刷新页面后重试')}), 403
 
 # 将配置应用到 Flask 应用
 app.secret_key = Config.SECRET_KEY
@@ -164,6 +201,14 @@ def app_page():
     未登录用户会被重定向到首页
     """
     return render_template('index.html')
+
+@app.route('/generator')
+def generator_page():
+    """新版二维码生成器（公开，基于 qrkit 内核，无需登录）"""
+    from routes.qrkit.types import registry
+    # 服务端直出类型 schema，避免预览沙箱中 fetch 被拦截导致无法选择类型
+    return render_template('qr_generator.html', types=registry.describe())
+
 
 @app.route('/dashboard')
 @login_required_page

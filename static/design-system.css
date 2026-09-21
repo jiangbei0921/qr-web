@@ -8,12 +8,12 @@
    ============================================ */
 :root,
 [data-theme="light"] {
-  --ds-accent: #0071E3;
-  --ds-accent-hover: #0077ED;
-  --ds-accent-glow: rgba(0, 113, 227, 0.25);
+  --ds-accent: #D4A853;
+  --ds-accent-hover: #B8860B;
+  --ds-accent-glow: rgba(212, 168, 83, 0.25);
   --ds-success: #34C759;
   --ds-success-glow: rgba(52, 199, 89, 0.25);
-  --ds-warning: #FF9500;
+  --ds-warning: #D4A853;
   --ds-warning-glow: rgba(255, 149, 0, 0.25);
   --ds-danger: #FF3B30;
   --ds-danger-glow: rgba(255, 59, 48, 0.25);
@@ -34,7 +34,7 @@
 
   --ds-border: rgba(0, 0, 0, 0.08);
   --ds-border-light: rgba(0, 0, 0, 0.04);
-  --ds-border-focus: #0071E3;
+  --ds-border-focus: #D4A853;
 
   --ds-radius-sm: 12px;
   --ds-radius: 24px;
@@ -54,7 +54,7 @@
   --ds-shadow: 0 4px 16px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.04);
   --ds-shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04);
   --ds-shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.10), 0 8px 20px rgba(0, 0, 0, 0.04);
-  --ds-shadow-glow: 0 0 24px rgba(0, 113, 227, 0.25);
+  --ds-shadow-glow: 0 0 24px rgba(212, 168, 83, 0.25);
 
   --ds-transition-fast: 0.15s cubic-bezier(0.25, 0.1, 0.25, 1);
   --ds-transition: 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
@@ -90,7 +90,7 @@
   --ds-glass-border: rgba(0, 0, 0, 0.06);
   --ds-glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
 
-  --ds-accent-light: #0071E3;
+  --ds-accent-light: #D4A853;
   --ds-bg-light: #F5F5F7;
   --ds-bg-secondary-light: #EEEEF0;
   --ds-surface-light: #FFFFFF;
@@ -101,12 +101,12 @@
 }
 
 [data-theme="dark"] {
-  --ds-accent: #0A84FF;
-  --ds-accent-hover: #409CFF;
-  --ds-accent-glow: rgba(10, 132, 255, 0.3);
+  --ds-accent: #D4A853;
+  --ds-accent-hover: #E0B85C;
+  --ds-accent-glow: rgba(212, 168, 83, 0.3);
   --ds-success: #30D158;
   --ds-success-glow: rgba(48, 209, 88, 0.3);
-  --ds-warning: #FF9F0A;
+  --ds-warning: #D4A853;
   --ds-warning-glow: rgba(255, 159, 10, 0.3);
   --ds-danger: #FF453A;
   --ds-danger-glow: rgba(255, 69, 58, 0.3);
@@ -127,13 +127,13 @@
 
   --ds-border: rgba(255, 255, 255, 0.08);
   --ds-border-light: rgba(255, 255, 255, 0.04);
-  --ds-border-focus: #0A84FF;
+  --ds-border-focus: #D4A853;
 
   --ds-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
   --ds-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
   --ds-shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.5);
   --ds-shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.6);
-  --ds-shadow-glow: 0 0 24px rgba(10, 132, 255, 0.3);
+  --ds-shadow-glow: 0 0 24px rgba(212, 168, 83, 0.3);
 
   --ds-glass-bg: rgba(28, 28, 30, 0.72);
   --ds-glass-bg-strong: rgba(28, 28, 30, 0.85);

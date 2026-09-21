@@ -5,8 +5,8 @@
 :root,
 [data-theme="light"] {
     --ms-primary: var(--ds-accent-light);
-    --ms-primary-light: #7C3AED;
-    --ms-gradient: linear-gradient(135deg, var(--ds-accent-light) 0%, #7C3AED 50%, #A855F7 100%);
+    --ms-primary-light: #b8860b;
+    --ms-gradient: linear-gradient(135deg, var(--ds-accent-light) 0%, #b8860b 50%, #d4a853 100%);
     --ms-bg: var(--ds-bg-secondary-light);
     --ms-surface: var(--ds-surface-light);
     --ms-text: var(--ds-text-primary-light);
@@ -21,8 +21,8 @@
 
 [data-theme="dark"] {
     --ms-primary: var(--ds-accent);
-    --ms-primary-light: #8B5CF6;
-    --ms-gradient: linear-gradient(135deg, var(--ds-accent) 0%, #8B5CF6 50%, #A855F7 100%);
+    --ms-primary-light: #d4a853;
+    --ms-gradient: linear-gradient(135deg, var(--ds-accent) 0%, #d4a853 50%, #d4a853 100%);
     --ms-bg: var(--ds-bg);
     --ms-surface: var(--ds-surface);
     --ms-text: var(--ds-text-primary);

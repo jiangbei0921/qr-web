@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <title>ZhiQR · 二维码生成器（新架构）</title>
+    <link rel="stylesheet" href="/static/design-system.css">
+    <script>
+        (function () {
+            var t = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', t);
+        })();
+    </script>
+    <script src="/static/csrf.js"></script>
+    <style>
+        :root {
+            --gold: var(--ds-accent, #D4A853);
+            --gold-hover: var(--ds-accent-hover, #B8860B);
+            --gold-glow: var(--ds-accent-glow, rgba(212, 168, 83, 0.28));
+        }
+        [data-theme="dark"] {
+            --bg: #0B0F1A;
+            --bg-2: #111726;
+            --surface: rgba(255, 255, 255, 0.04);
+            --surface-strong: rgba(255, 255, 255, 0.06);
+            --border: rgba(255, 255, 255, 0.10);
+            --tx: #E8ECF4;
+            --tx-2: #9AA6BC;
+            --tx-3: #6B7689;
+        }
+        [data-theme="light"] {
+            --bg: #F4F1EA;
+            --bg-2: #FFFFFF;
+            --surface: rgba(0, 0, 0, 0.03);
+            --surface-strong: rgba(0, 0, 0, 0.05);
+            --border: rgba(0, 0, 0, 0.10);
+            --tx: #1A1F2E;
+            --tx-2: #5A6478;
+            --tx-3: #8A93A6;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: radial-gradient(1200px 600px at 80% -10%, var(--gold-glow), transparent 60%), var(--bg);
+            color: var(--tx);
+            min-height: 100vh;
+            transition: background .35s ease, color .35s ease;
+        }
+        .topbar {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 28px; border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(20px);
+        }
+        .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; letter-spacing: .5px; }
+        .brand .dot {
+            width: 26px; height: 26px; border-radius: 8px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-hover));
+            box-shadow: 0 4px 14px var(--gold-glow);
+            display: inline-block;
+        }
+        .topbar-right { display: flex; align-items: center; gap: 12px; }
+        .ghost-btn {
+            background: var(--surface); border: 1px solid var(--border); color: var(--tx);
+            padding: 8px 14px; border-radius: 10px; cursor: pointer; font-size: 13px;
+            transition: transform .25s cubic-bezier(.16,1,.3,1), background .2s;
+        }
+        .ghost-btn:hover { transform: translateY(-2px); background: var(--surface-strong); }
+        .layout {
+            max-width: 1080px; margin: 28px auto; padding: 0 20px;
+            display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 22px; align-items: start;
+        }
+        @media (max-width: 880px) { .layout { grid-template-columns: 1fr; } }
+        .glass {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 18px; padding: 20px; backdrop-filter: blur(24px) saturate(160%);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+        }
+        .card-title { font-size: 13px; font-weight: 700; color: var(--tx-2); margin: 0 0 12px; text-transform: uppercase; letter-spacing: 1px; }
+        .card-title:not(:first-child) { margin-top: 22px; }
+        .type-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .type-card {
+            border: 1px solid var(--border); border-radius: 14px; padding: 14px 8px; text-align: center;
+            cursor: pointer; background: var(--surface); transition: transform .25s cubic-bezier(.16,1,.3,1), border-color .2s, background .2s;
+        }
+        .type-card:hover { transform: translateY(-3px) scale(1.03); }
+        .type-card.active { border-color: var(--gold); background: var(--gold-glow); box-shadow: 0 6px 20px var(--gold-glow); }
+        .type-icon { font-size: 24px; line-height: 1; }
+        .type-label { display: block; margin-top: 8px; font-size: 12px; color: var(--tx); }
+        .field { margin-bottom: 14px; }
+        .field label { display: block; font-size: 13px; color: var(--tx-2); margin-bottom: 6px; }
+        .field .req { color: var(--gold); margin-left: 2px; }
+        .input, .select {
+            width: 100%; padding: 11px 13px; border-radius: 11px; font-size: 14px;
+            background: var(--bg-2); border: 1px solid var(--border); color: var(--tx);
+            transition: border-color .2s, box-shadow .2s; outline: none;
+        }
+        .input:focus, .select:focus { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-glow); }
+        .row { display: flex; gap: 12px; }
+        .row > * { flex: 1; }
+        .swatch-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .swatch {
+            width: 30px; height: 30px; border-radius: 8px; cursor: pointer; border: 2px solid transparent;
+            transition: transform .2s, border-color .2s;
+        }
+        .swatch:hover { transform: scale(1.12); }
+        .swatch.active { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-glow); }
+        .color-input { width: 40px; height: 34px; border: 1px solid var(--border); border-radius: 8px; background: none; cursor: pointer; padding: 0; }
+        .seg { display: flex; gap: 8px; flex-wrap: wrap; }
+        .seg button {
+            flex: 1; min-width: 60px; padding: 9px; border-radius: 10px; cursor: pointer; font-size: 13px;
+            background: var(--surface); border: 1px solid var(--border); color: var(--tx-2);
+            transition: all .2s cubic-bezier(.16,1,.3,1);
+        }
+        .seg button:hover { transform: translateY(-2px); }
+        .seg button.active { background: var(--gold); color: #1A1206; border-color: var(--gold); font-weight: 700; }
+        .preview-wrap { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+        .qr-box {
+            width: 100%; max-width: 320px; aspect-ratio: 1; border-radius: 18px;
+            background: #fff; display: flex; align-items: center; justify-content: center; padding: 16px;
+            box-shadow: 0 10px 36px rgba(0,0,0,0.25); transition: opacity .25s;
+        }
+        .qr-box svg, .qr-box img { width: 100%; height: 100%; object-fit: contain; border-radius: 8px; }
+        .qr-placeholder { color: #94A3B8; font-size: 14px; text-align: center; }
+        .payload {
+            width: 100%; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12px;
+            color: var(--tx-2); background: var(--bg-2); border: 1px dashed var(--border);
+            border-radius: 10px; padding: 12px; word-break: break-all; min-height: 44px;
+        }
+        .actions { display: flex; gap: 10px; width: 100%; }
+        .btn {
+            flex: 1; padding: 13px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer;
+            border: 1px solid transparent; transition: transform .2s cubic-bezier(.16,1,.3,1), box-shadow .2s;
+        }
+        .btn-primary { background: linear-gradient(135deg, var(--gold), var(--gold-hover)); color: #1A1206; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 22px var(--gold-glow); }
+        .btn-secondary { background: var(--surface); border-color: var(--border); color: var(--tx); flex: 0 0 auto; padding: 13px 16px; }
+        .btn-secondary:hover { transform: translateY(-2px); background: var(--surface-strong); }
+        .toast {
+            position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%) translateY(20px);
+            background: var(--bg-2); border: 1px solid var(--border); color: var(--tx);
+            padding: 12px 18px; border-radius: 12px; font-size: 13px; opacity: 0; pointer-events: none;
+            transition: all .3s; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 999;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .toast.err { border-color: #EF4444; color: #FCA5A5; }
+        .hint { font-size: 12px; color: var(--tx-3); margin-top: 8px; }
+        .badge { display: inline-block; font-size: 11px; padding: 3px 9px; border-radius: 999px; background: var(--gold-glow); color: var(--gold); margin-bottom: 10px; }
+        .tabs { max-width: 1080px; margin: 24px auto 0; padding: 0 20px; display: flex; gap: 10px; }
+        .tab {
+            padding: 10px 18px; border-radius: 12px; cursor: pointer; font-size: 14px; font-weight: 600;
+            background: var(--surface); border: 1px solid var(--border); color: var(--tx-2);
+            transition: all .2s cubic-bezier(.16,1,.3,1);
+        }
+        .tab:hover { transform: translateY(-2px); }
+        .tab.active { background: linear-gradient(135deg, var(--gold), var(--gold-hover)); color: #1A1206; border-color: var(--gold); }
+        .textarea {
+            width: 100%; padding: 12px 13px; border-radius: 11px; font-size: 13px; line-height: 1.6;
+            font-family: ui-monospace, Menlo, Consolas, monospace; background: var(--bg-2);
+            border: 1px solid var(--border); color: var(--tx); outline: none; resize: vertical;
+        }
+        .textarea:focus { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-glow); }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <div class="brand"><span class="dot"></span> ZhiQR · 新生成器</div>
+        <div class="topbar-right">
+            <a class="ghost-btn" href="/">← 返回旧版</a>
+            <button class="ghost-btn" id="theme-btn">🌓 主题</button>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" data-tab="single">✨ 单条生成</button>
+        <button class="tab" data-tab="batch">⚡ 批量生成</button>
+    </div>
+
+    <div id="single-panel" class="layout">
+        <!-- 配置面板 -->
+        <section class="glass">
+            <span class="badge">新架构 · 自描述驱动</span>
+            <h2 style="margin:4px 0 2px;font-size:20px">创建二维码</h2>
+            <p class="hint" style="margin-top:0">类型与字段由 <code>/api/qr/types</code> 动态下发，前端零硬编码。</p>
+
+            <p class="card-title">选择类型</p>
+            <div class="type-grid" id="type-grid"></div>
+
+            <p class="card-title">填写内容</p>
+            <div id="form-fields"></div>
+
+            <p class="card-title">外观设置</p>
+            <div class="row">
+                <div class="field">
+                    <label>前景色</label>
+                    <div class="swatch-row" id="fg-swatches"></div>
+                </div>
+                <div class="field">
+                    <label>背景色</label>
+                    <div class="swatch-row" id="bg-swatches"></div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="field">
+                    <label>纠错级别</label>
+                    <div class="seg" id="ec-seg">
+                        <button data-v="L">L 7%</button>
+                        <button data-v="M" class="active">M 15%</button>
+                        <button data-v="Q">Q 25%</button>
+                        <button data-v="H">H 30%</button>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>样式</label>
+                    <div class="seg" id="style-seg">
+                        <button data-v="square" class="active">方形</button>
+                        <button data-v="rounded">圆角</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="field">
+                <label>导出尺寸</label>
+                <div class="seg" id="size-seg">
+                    <button data-v="300">小 300</button>
+                    <button data-v="600" class="active">中 600</button>
+                    <button data-v="1200">大 1200</button>
+                </div>
+            </div>
+
+            <div class="field">
+                <label>中心 Logo（可选，建议正方形 PNG）</label>
+                <input type="file" id="logo-input" accept="image/*" />
+            </div>
+            <div class="field" style="flex-direction:row;align-items:center;gap:10px">
+                <input type="checkbox" id="transparent-input" style="width:auto" />
+                <label for="transparent-input" style="margin:0">透明背景（仅 PNG 生效）</label>
+            </div>
+        </section>
+
+        <!-- 预览面板 -->
+        <section class="glass">
+            <p class="card-title">实时预览</p>
+            <div class="preview-wrap">
+                <div class="qr-box" id="qr-box">
+                    <div class="qr-placeholder" id="qr-placeholder">选择类型并填写内容后自动生成</div>
+                </div>
+                <div class="payload" id="payload">—</div>
+                <div class="actions">
+                    <button class="btn btn-primary" id="dl-png">↓ 下载 PNG</button>
+                    <button class="btn btn-secondary" id="dl-svg">下载 SVG</button>
+                    <button class="btn btn-secondary" id="dl-pdf">下载 PDF</button>
+                </div>
+                <p class="hint" style="text-align:center">所有生成默认不落库（QuickGenerate），即开即用、零门槛。</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- 批量生成面板（新架构 · 复用 qrkit 内核） -->
+    <div id="batch-panel" class="layout" style="display:none">
+        <section class="glass">
+            <span class="badge">新架构 · 批量内核</span>
+            <h2 style="margin:4px 0 2px;font-size:20px">批量生成二维码</h2>
+            <p class="hint" style="margin-top:0">第一列填类型，后续列按该类型字段顺序（末列可含逗号）。支持可选表头行（首列 type）。</p>
+
+            <p class="card-title">粘贴批量数据（CSV / 每行一条）</p>
+            <textarea id="batch-input" class="textarea" rows="12" placeholder="url,https://example.com
+text,你好世界,这里的逗号会保留
+wifi,MyHome,password123,WPA
+email,hi@zhiqr.com,邮件标题,正文内容"></textarea>
+
+            <p class="hint">字段顺序：url→[url]；text→[text]；email→[email,subject,body]；vcard→[name,phone,email,company,title]；wifi→[ssid,password,security]；sms→[phone,body]；tel→[phone]；geo→[lat,lng]</p>
+
+            <p class="card-title">导出格式</p>
+            <div class="seg" id="batch-fmt-seg">
+                <button data-v="png" class="active">PNG（ZIP）</button>
+                <button data-v="svg">SVG（ZIP）</button>
+                <button data-v="pdf">PDF（ZIP）</button>
+            </div>
+
+            <div style="margin-top:18px">
+                <button class="btn btn-primary" id="batch-run">⚡ 批量生成并下载 ZIP</button>
+            </div>
+            <p class="hint">单次最多 100 条 · 生成结果打包为 ZIP（含 README.txt 清单记录每条内容与失败原因）</p>
+        </section>
+
+        <section class="glass">
+            <p class="card-title">批量结果</p>
+            <div class="payload" id="batch-result">—</div>
+            <p class="hint">下载的 ZIP 内每个文件命名如 <code>001-url.png</code>，README.txt 记录每条二维码内容，<code>#</code> 开头为失败条目。</p>
+        </section>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <!-- 服务端直出的类型 schema（避免预览沙箱中 fetch 被拦截导致无法选择类型） -->
+    <script>window.QR_TYPES = {{ types | tojson | safe }};</script>
+
+    <script>
+        (function () {
+            var TYPES = window.QR_TYPES || [];   // 自描述 schema（服务端直出，缺省时回退到 fetch）
+            var current = null;      // 当前类型 key
+            var state = {
+                fg: '#000000', bg: '#FFFFFF', ec: 'M', style: 'square', size: 600,
+                logo: null, transparent: false
+            };
+            var lastPng = null;      // 最近一次 PNG data_uri
+            var lastPayload = '';
+
+            var $ = function (id) { return document.getElementById(id); };
+
+            function toast(msg, isErr) {
+                var t = $('toast');
+                t.textContent = msg;
+                t.className = 'toast show' + (isErr ? ' err' : '');
+                clearTimeout(t._tid);
+                t._tid = setTimeout(function () { t.className = 'toast'; }, 2600);
+            }
+
+            // 主题切换
+            $('theme-btn').addEventListener('click', function () {
+                var cur = document.documentElement.getAttribute('data-theme');
+                var next = cur === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', next);
+                localStorage.setItem('theme', next);
+            });
+
+            // 颜色预设
+            var FGS = ['#000000', '#D4A853', '#1677FF', '#10B981', '#EF4444', '#8B5CF6'];
+            var BGS = ['#FFFFFF', '#0B0F1A', '#FFF7E6', '#E8F5EE', '#FEE2E2', '#F1ECFF'];
+            function buildSwatches(containerId, colors, key) {
+                var box = $(containerId);
+                box.innerHTML = '';
+                colors.forEach(function (c) {
+                    var s = document.createElement('div');
+                    s.className = 'swatch' + (c === state[key] ? ' active' : '');
+                    s.style.background = c;
+                    s.title = c;
+                    s.addEventListener('click', function () {
+                        state[key] = c;
+                        Array.prototype.forEach.call(box.children, function (el) { el.classList.remove('active'); });
+                        s.classList.add('active');
+                        preview();
+                    });
+                    box.appendChild(s);
+                });
+                var picker = document.createElement('input');
+                picker.type = 'color'; picker.className = 'color-input'; picker.value = state[key];
+                picker.addEventListener('input', function () {
+                    state[key] = picker.value;
+                    Array.prototype.forEach.call(box.children, function (el) { el.classList.remove('active'); });
+                    preview();
+                });
+                box.appendChild(picker);
+            }
+
+            // segmented 控件
+            function bindSeg(id, key, cast) {
+                $(id).addEventListener('click', function (e) {
+                    var b = e.target.closest('button');
+                    if (!b) return;
+                    Array.prototype.forEach.call($(id).children, function (el) { el.classList.remove('active'); });
+                    b.classList.add('active');
+                    state[key] = cast ? cast(b.dataset.v) : b.dataset.v;
+                    preview();
+                });
+            }
+
+            // 拉取类型 schema（优先使用服务端直出的 window.QR_TYPES，避免预览沙箱中 fetch 被拦截导致无法选择类型）
+            function loadTypes() {
+                if (TYPES.length) {
+                    renderTypeGrid();
+                    if (TYPES.length) selectType(TYPES[0].type);
+                    return Promise.resolve();
+                }
+                return fetch('/api/qr/types').then(function (r) { return r.json(); }).then(function (d) {
+                    TYPES = (d && d.types) || [];
+                    renderTypeGrid();
+                    if (TYPES.length) selectType(TYPES[0].type);
+                });
+            }
+
+            function renderTypeGrid() {
+                var grid = $('type-grid');
+                grid.innerHTML = '';
+                TYPES.forEach(function (t) {
+                    var card = document.createElement('div');
+                    card.className = 'type-card';
+                    card.dataset.type = t.type;
+                    var icon = { url: '🔗', text: '📝', email: '✉️', vcard: '👤', wifi: '📡', sms: '💬', tel: '📞', geo: '📍' }[t.type] || '▦';
+                    card.innerHTML = '<div class="type-icon">' + icon + '</div><span class="type-label">' + t.label + '</span>';
+                    card.addEventListener('click', function () { selectType(t.type); });
+                    grid.appendChild(card);
+                });
+            }
+
+            function selectType(typeKey) {
+                current = typeKey;
+                Array.prototype.forEach.call($('type-grid').children, function (el) {
+                    el.classList.toggle('active', el.dataset.type === typeKey);
+                });
+                renderForm(typeKey);
+                preview();
+            }
+
+            function renderForm(typeKey) {
+                var t = TYPES.filter(function (x) { return x.type === typeKey; })[0];
+                var box = $('form-fields');
+                box.innerHTML = '';
+                if (!t) return;
+                (t.fields || []).forEach(function (f) {
+                    var wrap = document.createElement('div');
+                    wrap.className = 'field';
+                    var req = f.required ? '<span class="req">*</span>' : '';
+                    var label = document.createElement('label');
+                    label.innerHTML = f.label + req;
+                    wrap.appendChild(label);
+
+                    var ctrl;
+                    if (f.type === 'bool') {
+                        ctrl = document.createElement('input');
+                        ctrl.type = 'checkbox'; ctrl.className = 'input'; ctrl.id = 'fld-' + f.key;
+                        ctrl.checked = !!f.default;
+                    } else if (f.options && f.options.length) {
+                        ctrl = document.createElement('select');
+                        ctrl.className = 'select'; ctrl.id = 'fld-' + f.key;
+                        f.options.forEach(function (o) {
+                            var op = document.createElement('option');
+                            op.value = o; op.textContent = o;
+                            if (o === f.default) op.selected = true;
+                            ctrl.appendChild(op);
+                        });
+                    } else {
+                        ctrl = document.createElement('input');
+                        ctrl.type = f.type === 'email' ? 'email' : (f.type === 'url' ? 'url' : 'text');
+                        ctrl.className = 'input'; ctrl.id = 'fld-' + f.key;
+                        ctrl.placeholder = f.placeholder || '';
+                        if (f.default) ctrl.value = f.default;
+                    }
+                    ctrl.addEventListener('input', preview);
+                    ctrl.addEventListener('change', preview);
+                    wrap.appendChild(ctrl);
+                    box.appendChild(wrap);
+                });
+                if (!(t.fields || []).length) {
+                    box.innerHTML = '<p class="hint">该类型无需填写内容。</p>';
+                }
+            }
+
+            function collectFields() {
+                var t = TYPES.filter(function (x) { return x.type === current; })[0];
+                var out = {};
+                (t.fields || []).forEach(function (f) {
+                    var el = $('fld-' + f.key);
+                    if (!el) return;
+                    out[f.key] = (el.type === 'checkbox') ? el.checked : el.value;
+                });
+                return out;
+            }
+
+            var previewTimer = null;
+            function preview() {
+                if (!current) return;
+                clearTimeout(previewTimer);
+                previewTimer = setTimeout(doGenerate, 350);
+            }
+
+            function buildOpts() {
+                return {
+                    error_correction: state.ec,
+                    fill_color: state.fg,
+                    back_color: state.bg,
+                    style: state.style,
+                    size: state.size,
+                    logo: state.logo,
+                    transparent_bg: state.transparent
+                };
+            }
+
+            function doGenerate() {
+                if (!current) return;
+                var body = {
+                    type: current,
+                    fields: collectFields(),
+                    options: buildOpts(),
+                    format: 'png'
+                };
+                fetch('/api/qr/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                }).then(function (r) {
+                    return r.json().then(function (d) { return { ok: r.ok, d: d }; });
+                }).then(function (res) {
+                    if (!res.ok) {
+                        $('qr-box').innerHTML = '<div class="qr-placeholder">⚠️ ' + (res.d.message || '生成失败') + '</div>';
+                        $('payload').textContent = '—';
+                        lastPng = null;
+                        return;
+                    }
+                    lastPng = res.d.data_uri;
+                    lastPayload = res.d.payload || '';
+                    $('qr-box').innerHTML = '<img alt="qr" src="' + res.d.data_uri + '">';
+                    $('payload').textContent = lastPayload;
+                }).catch(function () {
+                    $('qr-box').innerHTML = '<div class="qr-placeholder">网络错误，请重试</div>';
+                });
+            }
+
+            function downloadPNG() {
+                if (!lastPng) { toast('请先生成二维码', true); return; }
+                var a = document.createElement('a');
+                a.href = lastPng; a.download = 'zhiqr-' + current + '.png';
+                document.body.appendChild(a); a.click(); a.remove();
+            }
+
+            function downloadSVG() {
+                if (!current) return;
+                var body = {
+                    type: current, fields: collectFields(),
+                    options: buildOpts(), format: 'svg'
+                };
+                fetch('/api/qr/generate', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+                }).then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+                 .then(function (res) {
+                    if (!res.ok || !res.d.svg) { toast('SVG 生成失败', true); return; }
+                    var blob = new Blob([res.d.svg], { type: 'image/svg+xml' });
+                    var url = URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    a.href = url; a.download = 'zhiqr-' + current + '.svg';
+                    document.body.appendChild(a); a.click(); a.remove();
+                    URL.revokeObjectURL(url);
+                }).catch(function () { toast('SVG 生成失败', true); });
+            }
+
+            function downloadPDF() {
+                if (!current) return;
+                var body = {
+                    type: current, fields: collectFields(),
+                    options: buildOpts(), format: 'pdf'
+                };
+                fetch('/api/qr/generate', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+                }).then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+                 .then(function (res) {
+                    if (!res.ok || !res.d.pdf_base64) { toast('PDF 生成失败', true); return; }
+                    var a = document.createElement('a');
+                    a.href = res.d.data_uri; a.download = 'zhiqr-' + current + '.pdf';
+                    document.body.appendChild(a); a.click(); a.remove();
+                }).catch(function () { toast('PDF 生成失败', true); });
+            }
+
+            $('dl-png').addEventListener('click', downloadPNG);
+            $('dl-svg').addEventListener('click', downloadSVG);
+            $('dl-pdf').addEventListener('click', downloadPDF);
+            $('logo-input').addEventListener('change', function (e) {
+                var file = e.target.files && e.target.files[0];
+                if (!file) { state.logo = null; preview(); return; }
+                var reader = new FileReader();
+                reader.onload = function () { state.logo = reader.result; preview(); };
+                reader.readAsDataURL(file);
+            });
+            $('transparent-input').addEventListener('change', function (e) {
+                state.transparent = e.target.checked; preview();
+            });
+            bindSeg('ec-seg', 'ec');
+            bindSeg('style-seg', 'style');
+            bindSeg('size-seg', 'size', function (v) { return parseInt(v, 10); });
+            buildSwatches('fg-swatches', FGS, 'fg');
+            buildSwatches('bg-swatches', BGS, 'bg');
+
+            // ============ Tab 切换（单条 / 批量） ============
+            document.querySelectorAll('.tab').forEach(function (tb) {
+                tb.addEventListener('click', function () {
+                    document.querySelectorAll('.tab').forEach(function (x) { x.classList.remove('active'); });
+                    tb.classList.add('active');
+                    var tab = tb.dataset.tab;
+                    $('single-panel').style.display = tab === 'single' ? '' : 'none';
+                    $('batch-panel').style.display = tab === 'batch' ? '' : 'none';
+                });
+            });
+
+            // ============ 批量生成 ============
+            var batchFmt = 'png';
+            $('batch-fmt-seg').addEventListener('click', function (e) {
+                var b = e.target.closest('button');
+                if (!b) return;
+                Array.prototype.forEach.call($('batch-fmt-seg').children, function (el) { el.classList.remove('active'); });
+                b.classList.add('active');
+                batchFmt = b.dataset.v;
+            });
+
+            // 解析批量输入：每行 第一列=类型，后续列按类型字段顺序（末列收尾剩余逗号）
+            function parseBatch(text) {
+                var lines = (text || '').split('\n').map(function (l) { return l.trim(); }).filter(Boolean);
+                if (!lines.length) return [];
+                var header = null;
+                var firstParts = lines[0].split(',');
+                if (firstParts[0].trim().toLowerCase() === 'type') {
+                    header = firstParts.map(function (s) { return s.trim(); });
+                    lines = lines.slice(1);
+                }
+                var items = [];
+                lines.forEach(function (line) {
+                    var parts = line.split(',');
+                    var type = parts[0].trim();
+                    var t = TYPES.filter(function (x) { return x.type === type; })[0];
+                    if (!t) return;  // 跳过未知类型
+                    var vals = parts.slice(1);
+                    var fieldDefs = header ? header.slice(1) : t.fields.map(function (f) { return f.key; });
+                    var fields = {};
+                    fieldDefs.forEach(function (k, i) {
+                        if (i < fieldDefs.length - 1) fields[k] = (vals[i] || '').trim();
+                        else fields[k] = vals.slice(i).join(',').trim();  // 末列保留逗号
+                    });
+                    items.push({ type: type, fields: fields });
+                });
+                return items;
+            }
+
+            $('batch-run').addEventListener('click', function () {
+                var items = parseBatch($('batch-input').value);
+                if (!items.length) { toast('没有可生成的条目（检查类型是否拼写正确）', true); return; }
+                var btn = $('batch-run');
+                btn.disabled = true; btn.textContent = '生成中…';
+                $('batch-result').textContent = '正在生成 ' + items.length + ' 条…';
+                fetch('/api/qr/batch', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ items: items, format: batchFmt })
+                }).then(function (r) {
+                    if (!r.ok) return r.json().then(function (d) { throw new Error(d.message || '生成失败'); });
+                    return r.blob();
+                }).then(function (blob) {
+                    var url = URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    a.href = url; a.download = 'zhiqr-batch.zip';
+                    document.body.appendChild(a); a.click(); a.remove();
+                    URL.revokeObjectURL(url);
+                    $('batch-result').textContent = '✅ 已生成 ZIP（' + items.length + ' 条），开始下载。';
+                    toast('批量生成完成，已下载 ZIP');
+                }).catch(function (e) {
+                    $('batch-result').textContent = '❌ ' + (e.message || '批量生成失败');
+                    toast(e.message || '批量生成失败', true);
+                }).finally(function () {
+                    btn.disabled = false; btn.textContent = '⚡ 批量生成并下载 ZIP';
+                });
+            });
+
+            loadTypes().catch(function () { toast('加载类型失败', true); });
+        })();
+    </script>
+</body>
+</html>
